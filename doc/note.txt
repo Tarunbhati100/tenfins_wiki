@@ -1,0 +1,16 @@
+Brief Overview about this package :
+Toolbar type having scrollable & grid & Native expanded view, native Expanded view is for both type by one icon controller.
+HTML Editor package having default toolbar options if we want to customized that's option then used options defaulttoolbar Buttons and customtoolbar Buttons.
+
+Package having multiple controllers which are called directly on Click event and customized buttons.
+
+floating action button is used for toggle between codeview and Text editor.
+
+HTML editor options having multiple parameters for system layout and View of Editor, and also for file path. 
+ 
+HTML editor using file picker for upload images and insertlinks. Inside the toolbar options where you found mediaUploadInterceptor & mediaLinkInsertInterceptor,  
+ 
+In this package having plugins options inside HTML editor which is returns summernote plugins for list style, case converter, also Shows a dropdown of available mentions when the 
+'@' character is typed into the editor. 
+
+callbacks are available for calling back any methods or function which are performing inside editor.
