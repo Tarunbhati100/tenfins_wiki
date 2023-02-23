@@ -12,13 +12,12 @@ import 'package:tenfins_wiki/common/widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tenfins_wiki/homepage.dart';
-import 'package:tenfins_wiki/controller/namecontroller.dart';
 
 class addArticlePage extends StatefulWidget {
-    String? editArticel;
+    String? editArticle;
     String? Create;
 
- addArticlePage({super.key, this.editArticel, this.Create});
+ addArticlePage({super.key, this.editArticle, this.Create});
 
   @override
   State<addArticlePage> createState() => _addArticlePageState();

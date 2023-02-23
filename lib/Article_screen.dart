@@ -9,16 +9,16 @@ import 'common/widget.dart';
 
 
 class Articel_Screen extends StatelessWidget {
-  String? ariceltitle;
-  String? articelSubTitle;
-   Articel_Screen({super.key, this.ariceltitle, this.articelSubTitle,});
+  String? articletitle;
+  String?articletitleSubTitle;
+   Articel_Screen({super.key, this.articletitle, this.articletitleSubTitle,});
 
   @override
   Widget build(BuildContext context) {
     return   Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.primary,
-        title: appText(title: ariceltitle),
+        title: appText(title: articletitle),
         centerTitle:true,
         leading: InkWell(
           onTap: () {
@@ -26,7 +26,7 @@ class Articel_Screen extends StatelessWidget {
           },
           child: const Icon(Icons.arrow_back_rounded)),
       ),
-      body: Center(child:appText(title:articelSubTitle)),
+      body: Center(child:appText(title:articletitleSubTitle)),
     );
   }
 }

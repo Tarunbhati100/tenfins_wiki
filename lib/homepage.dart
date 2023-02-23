@@ -59,7 +59,7 @@ class _homepageState extends State<homepage> {
              padding:  EdgeInsets.only(right:2.w),
              child:   InkWell(
               onTap: () {
-                Get.to( addArticlePage(Create : "CREATE"));
+               Get.to( addArticlePage( Create : "CREATE"));
               },
               child: const ImageIcon( AssetImage("assets/images/createnew.png"),)),
            ),
@@ -84,6 +84,33 @@ class _homepageState extends State<homepage> {
             ),
           ),
           // Html(data: tempList[0]['name'].toString()),
+            // Expanded(
+            // child: ListView.builder(
+            //     itemCount: tempList.length,
+            //     itemBuilder: (BuildContext context, int index) {
+            //       return InkWell(
+            //         onTap: () {
+            //           Get.to( Articel_Screen());             
+            //         },
+            //         child: Padding(
+            //           padding:  EdgeInsets.symmetric(horizontal:3.w),
+            //           child: Card(
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(2.h),
+            //             ),
+            //             child:ListTile(
+            //               title: Html(data: tempList[index]['name'].toString()),
+            //               trailing: InkWell(
+            //                 onTap: () {
+            //                   //Get.to( addArticlePage(editArticle: tempList[index], Create: "UPDATE",));
+            //                 },
+            //                 child: ImageIcon(const AssetImage("assets/images/edit.png",),color: AppColor.black,)),    
+            //             ),
+            //           ), 
+            //         )
+            //       );
+            //     }),
+            // ),
           Expanded(
             child: ListView.builder(
                 itemCount: articleListController.article.length,
@@ -91,7 +118,7 @@ class _homepageState extends State<homepage> {
                  final articelData = articleListController.article[index];
                   return InkWell(
                     onTap: () {
-                      Get.to( Articel_Screen(ariceltitle: articelData.title,articelSubTitle: articelData.subtitle,));              // Navigator.push(context, CupertinoPageRoute(builder: (context) => Dictation_Screen( drimage: drList[index].image,drname: drList[index].name,),));
+                      Get.to( Articel_Screen());             
                     },
                     child: Padding(
                       padding:  EdgeInsets.symmetric(horizontal:3.w),
@@ -104,7 +131,7 @@ class _homepageState extends State<homepage> {
                           subtitle: appText(title: articelData.subtitle,),
                           trailing: InkWell(
                             onTap: () {
-                              Get.to( addArticlePage(editArticel: articelData.subtitle, Create: "UPDATE",));
+                              Get.to( addArticlePage(editArticle: articelData.subtitle, Create: "UPDATE",));
                             },
                             child: ImageIcon(const AssetImage("assets/images/edit.png",),color: AppColor.black,)),    
                         ),
@@ -112,7 +139,7 @@ class _homepageState extends State<homepage> {
                     )
                   );
                 }),
-          ),
+           ),
         ],
       ),
     
