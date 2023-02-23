@@ -1,5 +1,7 @@
 // import 'package:dna/screen/login_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tenfins_wiki/homepage.dart';
 import 'package:tenfins_wiki/html_editor_page.dart';
 import '../../common/widget.dart';
 import 'common/color.dart';
@@ -16,9 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (mounted) => htmlEditorPage()),
-      );
+          context, CupertinoPageRoute(builder: (context) => const homepage()));
     });
     super.initState();
   }
