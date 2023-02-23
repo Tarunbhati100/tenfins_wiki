@@ -101,7 +101,7 @@ class _homepageState extends State<homepage> {
                         ),
                         child: ListTile(
                           title: appText(title: articelData.title),
-                          subtitle: appText(title: tempList[0]['name'].toString()),
+                          subtitle: appText(title: articelData.subtitle,),
                           trailing: InkWell(
                             onTap: () {
                               Get.to( addArticlePage(editArticel: articelData.subtitle, Create: "UPDATE",));

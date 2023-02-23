@@ -12,6 +12,7 @@ import 'package:tenfins_wiki/common/widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tenfins_wiki/homepage.dart';
+import 'package:tenfins_wiki/controller/namecontroller.dart';
 
 class addArticlePage extends StatefulWidget {
     String? editArticel;
@@ -27,6 +28,8 @@ class _addArticlePageState extends State<addArticlePage> {
   String result = '';
   bool isLoading = false;
   final HtmlEditorController controller = HtmlEditorController();
+
+  final TextEditingController nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -57,7 +60,14 @@ class _addArticlePageState extends State<addArticlePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: textField2(
+                  controller: nameController,
+                  hint: 'Enter Article title',
+                  hight: 8.h,
+                ),
+              ),
               HtmlEditor(
                 controller: controller,
                 htmlEditorOptions: const HtmlEditorOptions(
@@ -147,10 +157,10 @@ class _addArticlePageState extends State<addArticlePage> {
               SizedBox(
                 height: 0.1.h,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(result),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Text(result),
+              // ),
               customButton(
                   width: 50.w,
                   height: 6.h,
@@ -167,6 +177,7 @@ class _addArticlePageState extends State<addArticlePage> {
                       result = txt;
                     });
                     CreateArticleList(result);
+                    showMsg(context,msg: "Article added Successfully", color: Colors.black26);
                     // Navigator.push(
                     //     context,
                     //     CupertinoPageRoute(
@@ -203,22 +214,11 @@ class _addArticlePageState extends State<addArticlePage> {
       print("%%%%%%%%%%%%%%%%%%${articleList}%%%%%%%%%%%%%%%%%%%%%");
       final prefs = await SharedPreferences.getInstance();
       List<String> tempList = [];
-      // if (prefs.getStringList("myLists") != null) {
-      //   tempList = prefs.getStringList("myLists")!;
-      // } else {
-      //   tempList = [];
-      // }
       tempList.add(jsonEncode({
         "name": articleList,
       }));
       prefs.setStringList("myLists", tempList);
       print(tempList);
-      // if (tempList.length > 0) {
-      //       ScaffoldMessenger.of(context).showSnackBar(
-      //           SnackBar(content: Text("Playlist alredy exists")));
-      // } else {
-
-      // }
     } catch (e) {
       print("Error : ${e.toString()}");
     }

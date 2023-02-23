@@ -63,6 +63,78 @@ Widget loading() {
   );
 }
 
+
+Widget textField2(
+    {hint,
+    double? borderRadius,
+    hight,
+    color,
+    image,
+    maxLines,
+    keyboardType,
+    validator,
+    title,
+    minline,
+    controller,
+    suffixIcon,
+    obscureText,
+    prefixIcon,
+    readOnly,
+    onTap,
+    inputFormatters,
+    horizontalpadding,
+    verticalpading,
+    onEditingComplete,
+    textInputAction,
+    onChanged,
+    backgroundcolor}) {
+  return Column(
+    children: [
+      Container(
+        // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFFACAAA0)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(borderRadius ?? 7),
+          boxShadow: [BoxShadow(color: Colors.blueGrey[50]!, blurRadius: 1)],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: TextFormField(
+            cursorColor: AppColor.primary,
+            onEditingComplete: onEditingComplete,
+            onChanged: onChanged,
+            onTap: onTap,
+            validator: validator,
+            keyboardType: keyboardType,
+            controller: controller,
+            inputFormatters: inputFormatters,
+            autofocus: false,
+            textInputAction: textInputAction ?? TextInputAction.done,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            readOnly: readOnly ?? false,
+            obscureText: obscureText ?? false,
+            style: TextStyle(
+                fontSize: 14, letterSpacing: 0.2, color: AppColor.black),
+            decoration: InputDecoration(
+              suffixIcon: suffixIcon,
+              icon: prefixIcon,
+              hintText: hint,
+              errorMaxLines: 2,
+              errorStyle: const TextStyle(fontSize: 10),
+              hintStyle:
+                  const TextStyle(color: Color(0xFF757570), fontSize: 14),
+              border: InputBorder.none,
+            ),
+            // textCapitalization: TextCapitalization.sentences,
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+
 Widget customButton({
   String? title,
   VoidCallback? onTap,

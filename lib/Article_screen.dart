@@ -11,7 +11,7 @@ import 'common/widget.dart';
 class Articel_Screen extends StatelessWidget {
   String? ariceltitle;
   String? articelSubTitle;
-   Articel_Screen(String string, {super.key, this.ariceltitle, this.articelSubTitle,});
+   Articel_Screen({super.key, this.ariceltitle, this.articelSubTitle,});
 
   @override
   Widget build(BuildContext context) {
