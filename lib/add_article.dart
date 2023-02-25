@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, depend_on_referenced_packages, use_build_context_synchronously
+// ignore_for_file: camel_case_types, depend_on_referenced_packages, use_build_context_synchronously, must_be_immutable, non_constant_identifier_names, prefer_const_constructors
 
 import 'dart:convert';
 
@@ -12,13 +12,19 @@ import 'package:tenfins_wiki/common/widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tenfins_wiki/homepage.dart';
-import 'package:tenfins_wiki/controller/namecontroller.dart';
 
 class addArticlePage extends StatefulWidget {
-    String? editArticel;
-    String? Create;
+  Map? editArticle;
+  String? Create;
+  bool? Iscreate;
+  bool? isvisible;
 
- addArticlePage({super.key, this.editArticel, this.Create});
+  addArticlePage(
+      {super.key,
+      this.editArticle,
+      this.Create,
+      this.Iscreate,
+      this.isvisible});
 
   @override
   State<addArticlePage> createState() => _addArticlePageState();
@@ -27,9 +33,30 @@ class addArticlePage extends StatefulWidget {
 class _addArticlePageState extends State<addArticlePage> {
   String result = '';
   bool isLoading = false;
+  List<dynamic> articleList = [];
   final HtmlEditorController controller = HtmlEditorController();
 
   final TextEditingController nameController = TextEditingController();
+
+  @override
+  void initState() {
+    _getArticlelist();
+    super.initState();
+  }
+
+  _getArticlelist() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if (prefs.getStringList("myLists").toString().isEmpty) {
+        articleList = [];
+      } else {
+        print(prefs.getStringList("myLists").toString());
+        articleList = jsonDecode(prefs.getStringList("myLists").toString());
+      }
+      print("==============${articleList}==============");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -41,45 +68,26 @@ class _addArticlePageState extends State<addArticlePage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.primary,
-          title: appText(title: "Edit Details"),
+          title: appText(title: widget.isvisible == true ? "Edit Article" : "Create Article"),
           elevation: 0,
-          //actions: [
-            // IconButton(
-            //     icon: const Icon(Icons.refresh),
-            //     onPressed: () {
-            //       if (kIsWeb) {
-            //         controller.reloadWeb();
-            //       } else {
-            //         controller.editorController!.reload();
-            //       }
-            //     })
-         // ],
         ),
-
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: textField2(
-                  controller: nameController,
-                  hint: 'Enter Article title',
-                  hight: 8.h,
-                ),
-              ),
               HtmlEditor(
                 controller: controller,
-                htmlEditorOptions: const HtmlEditorOptions(
-                  hint: 'Your text here...',
+                htmlEditorOptions: HtmlEditorOptions(
+                  initialText: widget.Iscreate == true
+                      ? widget.editArticle!["name"].toString()
+                      : "",
+                  hint: "Write Your Article..",
                   shouldEnsureVisible: true,
                   autoAdjustHeight: true,
                   adjustHeightForKeyboard: true,
-
-                  //initialText: "<p>text content initial, if any</p>",
                 ),
                 htmlToolbarOptions: HtmlToolbarOptions(
-                  toolbarPosition: ToolbarPosition.aboveEditor, //by default
+                  toolbarPosition: ToolbarPosition.aboveEditor,
                   toolbarType: ToolbarType.nativeExpandable,
                   renderBorder: true,
                   toolbarItemHeight: 40,
@@ -93,7 +101,7 @@ class _addArticlePageState extends State<addArticlePage> {
                     const FontSettingButtons(),
                     const ColorButtons(),
                     const ListButtons(),
-                    const ParagraphButtons(caseConverter: false),
+                    const ParagraphButtons(caseConverter: true),
                     const InsertButtons(),
                     const OtherButtons(
                         copy: true,
@@ -125,17 +133,27 @@ class _addArticlePageState extends State<addArticlePage> {
                   },
                   mediaUploadInterceptor:
                       (PlatformFile file, InsertFileType type) async {
-                    //file extension (eg jpeg or mp4)
+                    print(file.name); //filename
+                    print(file.size); //size in bytes
+                    print(file.extension);
                     return true;
                   },
                 ),
                 callbacks: Callbacks(onPaste: () {
                   showMsg(context, msg: 'Paste', color: Colors.black26);
                   print("");
+                }, onImageUploadError:
+                    (FileUpload? file, String? base64Str, UploadError error) {
+                  print(describeEnum(error));
+                  print(base64Str ?? '');
+                  if (file != null) {
+                    print(file.name);
+                    print(file.size);
+                    print(file.type);
+                  }
                 }),
-                // ignore: prefer_const_constructors
-                otherOptions: OtherOptions(
-                    decoration: const BoxDecoration(
+                otherOptions: const OtherOptions(
+                    decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                         border: Border.fromBorderSide(
                             BorderSide(color: Colors.black, width: 1.5))),
@@ -157,10 +175,17 @@ class _addArticlePageState extends State<addArticlePage> {
               SizedBox(
                 height: 0.1.h,
               ),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Text(result),
-              // ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: textField2(
+                    controller: nameController,
+                    hint: widget.isvisible == true
+                        ? widget.editArticle!["title"].toString()
+                        : 'Enter Article title',
+                    hight: 8.h,
+                    readOnly: widget.isvisible == true ? true : false,
+                    textInputAction: TextInputAction.done),
+              ),
               customButton(
                   width: 50.w,
                   height: 6.h,
@@ -173,15 +198,19 @@ class _addArticlePageState extends State<addArticlePage> {
                     if (txt.contains('src=\"data:')) {
                       txt = '<>';
                     }
+                    print("===============");
+                    print(txt);
                     setState(() {
                       result = txt;
                     });
-                    CreateArticleList(result);
-                    showMsg(context,msg: "Article added Successfully", color: Colors.black26);
-                    // Navigator.push(
-                    //     context,
-                    //     CupertinoPageRoute(
-                    //         builder: (context) => homepage()));
+                    widget.isvisible == true ?"":CreateArticleList(result, nameController.text);
+                    showMsg(context,
+                        msg: widget.isvisible == true ? "Article update Successfully" : "Article added Successfully",
+                        color: Colors.black26);
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => const homepage()));
                   })
             ],
           ),
@@ -209,15 +238,41 @@ class _addArticlePageState extends State<addArticlePage> {
     );
   }
 
-  void CreateArticleList(String articleList) async {
+  void CreateArticleList(String articleList, String title) async {
     try {
-      print("%%%%%%%%%%%%%%%%%%${articleList}%%%%%%%%%%%%%%%%%%%%%");
       final prefs = await SharedPreferences.getInstance();
-      List<String> tempList = [];
-      tempList.add(jsonEncode({
-        "name": articleList,
-      }));
+      List<String> tempList;
+      if (prefs.getStringList("myLists") != null) {
+        tempList = prefs.getStringList("myLists")!;
+      } else {
+        tempList = [];
+      }
+      if (tempList.isNotEmpty) {
+        for (var i = 0; i < tempList.length; i++) {
+          var t = jsonDecode(tempList[i]);
+          if (articleList.toLowerCase() != t["title"].toString().toLowerCase()) {
+            tempList.add(jsonEncode({
+              "title": title,
+              "name": articleList,
+            }));
+            break;
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Article alredy exists")));
+          }
+        }
+        // tempList.add(jsonEncode({
+        //   "title": title,
+        //   "name": articleList,
+        // }));
+      } else {
+        tempList.add(jsonEncode({
+          "title": title,
+          "name": articleList,
+        }));
+      }
       prefs.setStringList("myLists", tempList);
+      _getArticlelist();
       print(tempList);
     } catch (e) {
       print("Error : ${e.toString()}");

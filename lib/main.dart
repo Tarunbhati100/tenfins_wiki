@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context, orientation, deviceType) {
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Html Editor App',
+        title: 'Article App',
         theme: ThemeData(
           canvasColor: AppColor.whiteColor,
           primaryColor: AppColor.primary,
