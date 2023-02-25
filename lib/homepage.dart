@@ -28,7 +28,7 @@ class _homepageState extends State<homepage> {
   List<dynamic> searchList = [];
   bool iscreate = true;
   bool isvisible = true;
-  late final String photo;
+   late final String photo;
 
   @override
   void initState() {
@@ -96,9 +96,10 @@ class _homepageState extends State<homepage> {
             ),
           ),
           Expanded(
-            child: articleListController.SearchController.text.isNotEmpty &&
+            child:
+             articleListController.SearchController.text.isNotEmpty &&
                     searchList.isEmpty
-                ? Column(
+                ?Column(
                     // ignore: prefer_const_literals_to_create_immutables
                     children: [
                       const Align(
@@ -138,19 +139,19 @@ class _homepageState extends State<homepage> {
                                         : tempList[index]['title'].toString()),
                                 subtitle: Html(
                                     data: tempList[index]['name'].toString()),
-                                // leading: Container(
-                                //     height: 70.h,
-                                //     width: 20.w,
-                                //     decoration: BoxDecoration(
-                                //         borderRadius: BorderRadius.circular(20)),
-                                //     child: ClipRRect(
-                                //       borderRadius: BorderRadius.circular(20),
-                                //       child: Image.network(
-                                //         "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-                                //         fit: BoxFit.fill,
-                                //       ),
-                                //     ),
-                                //   ),
+                                    leading: Container(
+                                        height: 70.h,
+                                        width: 20.w,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20)),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: Image.network(
+                                            "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ),
                                 trailing: InkWell(
                                     onTap: () {
                                       Get.to(addArticlePage(
