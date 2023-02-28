@@ -1,9 +1,10 @@
-// ignore_for_file: file_names, camel_case_types, must_be_immutable, non_constant_identifier_names
+// ignore_for_file: file_names, camel_case_types, must_be_immutable, non_constant_identifier_names, avoid_print
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import 'common/color.dart';
-import 'common/widget.dart';
+import 'package:tenfins_wiki/common/color.dart';
+import 'package:tenfins_wiki/common/widget.dart';
+
 
 class Article_Screen extends StatefulWidget {
 Map? Article;

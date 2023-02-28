@@ -1,10 +1,9 @@
 // import 'package:dna/screen/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tenfins_wiki/homepage.dart';
-import 'package:tenfins_wiki/add_article.dart';
-import '../../common/widget.dart';
-import 'common/color.dart';
+import '../../../../common/widget.dart';
+import '../../common/color.dart';
+import 'home/homepage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -18,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.push(
-          context, CupertinoPageRoute(builder: (context) => const homepage()));
+          context, CupertinoPageRoute(builder: (context) => const HomePage()));
     });
     super.initState();
   }
