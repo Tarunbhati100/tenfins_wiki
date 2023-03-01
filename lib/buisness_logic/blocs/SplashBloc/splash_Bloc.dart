@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member
+// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, file_names
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tenfins_wiki/buisness_logic/blocs/SplashBloc/splash_Event.dart';

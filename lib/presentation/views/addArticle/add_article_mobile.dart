@@ -1,34 +1,26 @@
-// ignore_for_file: camel_case_types, depend_on_referenced_packages, use_build_context_synchronously, must_be_immutable, non_constant_identifier_names, prefer_const_constructors, unnecessary_brace_in_string_interps, avoid_print, unused_local_variable
+// ignore_for_file: must_be_immutable, non_constant_identifier_names, avoid_print
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/common/color.dart';
 import 'package:tenfins_wiki/common/widget.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:tenfins_wiki/buisness_logic/controller/addArticle_Controller.dart';
-import 'package:tenfins_wiki/presentation/views/home/homepage.dart';
 import 'package:tenfins_wiki/model/databaseModel.dart';
+import '../../../buisness_logic/controller/addArticle_Controller.dart';
 
-class AddArticlePage extends StatefulWidget {
+class AddArticleMobile extends StatefulWidget {
   ArticleModel? articleModel;
-
- 
-  AddArticlePage({
-    super.key,
-    this.articleModel,
-  });
+  AddArticleMobile({super.key, this.articleModel});
 
   @override
-  State<AddArticlePage> createState() => _AddArticlePageState();
+  State<AddArticleMobile> createState() => _AddArticleMobileState();
 }
 
-class _AddArticlePageState extends State<AddArticlePage> {
-  
+class _AddArticleMobileState extends State<AddArticleMobile> {
   AddArticleController addArticleController = Get.put(AddArticleController());
-
   @override
   Widget build(BuildContext context) {
     if (widget.articleModel != null) {
@@ -56,7 +48,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                   height: 1.h,
                 ),
                 textField2(
-                    controller:addArticleController.titleController,
+                    controller: addArticleController.titleController,
                     hint: "Enter Title",
                     hight: 8.h,
                     readOnly: false,
@@ -66,7 +58,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                 ),
                 HtmlEditor(
                   controller: addArticleController.controller,
-                  htmlEditorOptions: HtmlEditorOptions(
+                  htmlEditorOptions: const HtmlEditorOptions(
                     hint: "Write Your Article..",
                     shouldEnsureVisible: true,
                     autoAdjustHeight: true,
@@ -162,14 +154,12 @@ class _AddArticlePageState extends State<AddArticlePage> {
                   height: 3.h,
                 ),
                 customButton(
-                    width: 50.w,
-                    height: 6.h,
-                    title: "Create Article",
-                    textColor: AppColor.whiteColor,
-                    onTap: addArticleController.createArticle
-                    ),
-                   
-                  
+                  width: 50.w,
+                  height: 6.h,
+                  title: "Create Article",
+                  textColor: AppColor.whiteColor,
+                  onTap: addArticleController.AddArticle,
+                ),
                 SizedBox(
                   height: 3.h,
                 ),
@@ -192,7 +182,6 @@ class _AddArticlePageState extends State<AddArticlePage> {
             title: 'OK',
             textColor: AppColor.whiteColor,
             onTap: () {
-              
               Navigator.pop(context);
             },
           ),
@@ -200,4 +189,38 @@ class _AddArticlePageState extends State<AddArticlePage> {
       ),
     );
   }
+
+  // AddArticle() async {
+  //   var description = await addArticleController.controller.getText();
+  //   if (description.contains('src=\"data:')) {
+  //     description = '<>';
+  //   }
+  //   if (addArticleController.isUpdate.value) {
+  //     final Article = Articlemodel(
+  //       id: 1,
+  //       title: addArticleController.titleController.text,
+  //       description: description,
+  //     );
+  //     addArticleController.Articledata.updateArticle(
+  //             articlemodel: Article, index: Article.id)
+  //         .then((value) {
+  //       addArticleController.titleController.clear();
+  //       description;
+  //     });
+  //   } else {
+  //     final Article = Articlemodel(
+  //       id: 2,
+  //       title: addArticleController.titleController.text,
+  //       description: description,
+  //     );
+  //     addArticleController.Articledata.addArticle(articlemodel: Article)
+  //         .then((value) {
+  //       addArticleController.titleController.clear();
+  //       description;
+  //       print("Articledata------------$Article");
+  //       print(Article.title);
+  //       Get.to(const HomePage());
+  //     });
+  //   }
+  // }
 }

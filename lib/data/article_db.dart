@@ -1,3 +1,6 @@
+// ignore_for_file: constant_identifier_names, await_only_futures
+
+import 'package:hive/hive.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -55,7 +58,7 @@ class ArticleDB {
         await dbClient.rawQuery("SELECT * FROM $TABLE WHERE $COL_id=$id");
     return data;
   }
-
+  
   // Check Database
   checkArticleExist(String title) async {
     var dbClient = await db;
@@ -69,4 +72,35 @@ class ArticleDB {
     var dbClient = await db;
     return await dbClient.rawDelete("DELETE FROM $TABLE");
   }
+}
+
+
+
+
+class ArticleDataStore {
+  static const boxName = "ArticleBox";
+
+  // Get reference to an already opened box
+  static Box<Articlemodel> box = Hive.box<Articlemodel>(boxName);
+
+  /// Add new article
+  Future<void> addArticle({required Articlemodel articlemodel}) async {
+    await box.add(articlemodel);
+  }
+
+  /// show article list
+  Future<void> getArticle({required String id})async{
+    await box.get(id);
+  }
+
+  /// update article data
+  Future<void> updateArticle({required int index,required Articlemodel articlemodel}) async {
+    await box.putAt(index,articlemodel);
+  }
+
+  /// delete article
+  Future<void> deleteArticle({required int index}) async {
+    await box.deleteAt(index);
+  }
+
 }

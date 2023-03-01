@@ -1,6 +1,7 @@
 // import 'package:dna/screen/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import '../../../../common/widget.dart';
 import '../../common/color.dart';
 import 'home/homepage.dart';
@@ -38,8 +39,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Widget _buildbody() {
-    var height = SizeConfig.getHeight(context);
-    var width = SizeConfig.getWidth(context);
     return SafeArea(
       top: false,
       child: Stack(
@@ -58,12 +57,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   // ignore: prefer_const_literals_to_create_immutables
                   children: [
-                    SizedBox(height: height * 0.05),
+                
                     Image.asset(
                       'assets/images/coding.png',
-                      height: height * 0.3,
-                      width: width * 0.5,
+                      height: 25.h,
                     ),
+                    SizedBox(height: 2.h,),
                     appText(
                         title: 'HTML Editor App',
                         fontWeight: FontWeight.w700,
