@@ -1,4 +1,3 @@
-
 // ignore_for_file: must_be_immutable, avoid_print
 
 import 'package:flutter/foundation.dart';
@@ -11,28 +10,27 @@ import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/common/color.dart';
 import 'package:tenfins_wiki/common/widget.dart';
 import 'package:tenfins_wiki/model/databaseModel.dart';
-import '../../../buisness_logic/controller/addArticle_Controller.dart';
+import '../../../buisness_logic/controller/articleController.dart';
 
 class AddArticleDesktop extends StatefulWidget {
   ArticleModel? articleModel;
-   AddArticleDesktop({super.key,this.articleModel});
+  AddArticleDesktop({super.key, this.articleModel});
 
   @override
   State<AddArticleDesktop> createState() => _AddArticleDesktopState();
 }
 
 class _AddArticleDesktopState extends State<AddArticleDesktop> {
-
-  AddArticleController addArticleController = Get.put(AddArticleController());
+  ArticleController articleController = Get.put(ArticleController());
   @override
   Widget build(BuildContext context) {
-     if (widget.articleModel != null) {
-      addArticleController.titleController.text = widget.articleModel!.title!;
+    if (widget.articleModel != null) {
+      articleController.titleController.text = widget.articleModel!.title!;
     }
     return GestureDetector(
       onTap: () {
         if (!kIsWeb) {
-          addArticleController.controller.clearFocus();
+          articleController.controller.clearFocus();
         }
       },
       child: Scaffold(
@@ -51,7 +49,7 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                   height: 1.h,
                 ),
                 textField2(
-                    controller:addArticleController.titleController,
+                    controller: articleController.titleController,
                     hint: "Enter Title",
                     hight: 8.h,
                     readOnly: false,
@@ -60,7 +58,7 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                   height: 3.h,
                 ),
                 HtmlEditor(
-                  controller: addArticleController.controller,
+                  controller: articleController.controller,
                   htmlEditorOptions: const HtmlEditorOptions(
                     hint: "Write Your Article..",
                     shouldEnsureVisible: true,
@@ -161,9 +159,7 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                     height: 6.h,
                     title: "Create Article",
                     textColor: AppColor.whiteColor,
-                    onTap: addArticleController.AddArticle
-                    ),
-                                   
+                    onTap: articleController.saveArticle),
                 SizedBox(
                   height: 1.h,
                 ),
@@ -173,9 +169,8 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
         ),
       ),
     );
-
-    
   }
+
   Future showdialog() {
     return showDialog(
       context: context,
@@ -187,11 +182,11 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
             title: 'OK',
             textColor: AppColor.whiteColor,
             onTap: () {
-              
               Navigator.pop(context);
             },
           ),
         ],
       ),
     );
-}}
+  }
+}

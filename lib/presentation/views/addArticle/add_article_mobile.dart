@@ -9,7 +9,7 @@ import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/common/color.dart';
 import 'package:tenfins_wiki/common/widget.dart';
 import 'package:tenfins_wiki/model/databaseModel.dart';
-import '../../../buisness_logic/controller/addArticle_Controller.dart';
+import '../../../buisness_logic/controller/articleController.dart';
 
 class AddArticleMobile extends StatefulWidget {
   ArticleModel? articleModel;
@@ -20,16 +20,16 @@ class AddArticleMobile extends StatefulWidget {
 }
 
 class _AddArticleMobileState extends State<AddArticleMobile> {
-  AddArticleController addArticleController = Get.put(AddArticleController());
+  ArticleController articleController = Get.put(ArticleController());
   @override
   Widget build(BuildContext context) {
     if (widget.articleModel != null) {
-      addArticleController.titleController.text = widget.articleModel!.title!;
+      articleController.titleController.text = widget.articleModel!.title!;
     }
     return GestureDetector(
       onTap: () {
         if (!kIsWeb) {
-          addArticleController.controller.clearFocus();
+          articleController.controller.clearFocus();
         }
       },
       child: Scaffold(
@@ -48,7 +48,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                   height: 1.h,
                 ),
                 textField2(
-                    controller: addArticleController.titleController,
+                    controller: articleController.titleController,
                     hint: "Enter Title",
                     hight: 8.h,
                     readOnly: false,
@@ -57,7 +57,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                   height: 3.h,
                 ),
                 HtmlEditor(
-                  controller: addArticleController.controller,
+                  controller: articleController.controller,
                   htmlEditorOptions: const HtmlEditorOptions(
                     hint: "Write Your Article..",
                     shouldEnsureVisible: true,
@@ -158,7 +158,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                   height: 6.h,
                   title: "Create Article",
                   textColor: AppColor.whiteColor,
-                  onTap: addArticleController.AddArticle,
+                  onTap: articleController.saveArticle,
                 ),
                 SizedBox(
                   height: 3.h,
@@ -191,31 +191,31 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
   }
 
   // AddArticle() async {
-  //   var description = await addArticleController.controller.getText();
+  //   var description = await articleController.controller.getText();
   //   if (description.contains('src=\"data:')) {
   //     description = '<>';
   //   }
-  //   if (addArticleController.isUpdate.value) {
+  //   if (articleController.isUpdate.value) {
   //     final Article = Articlemodel(
   //       id: 1,
-  //       title: addArticleController.titleController.text,
+  //       title: articleController.titleController.text,
   //       description: description,
   //     );
-  //     addArticleController.Articledata.updateArticle(
+  //     articleController.Articledata.updateArticle(
   //             articlemodel: Article, index: Article.id)
   //         .then((value) {
-  //       addArticleController.titleController.clear();
+  //       articleController.titleController.clear();
   //       description;
   //     });
   //   } else {
   //     final Article = Articlemodel(
   //       id: 2,
-  //       title: addArticleController.titleController.text,
+  //       title: articleController.titleController.text,
   //       description: description,
   //     );
-  //     addArticleController.Articledata.addArticle(articlemodel: Article)
+  //     articleController.Articledata.addArticle(articlemodel: Article)
   //         .then((value) {
-  //       addArticleController.titleController.clear();
+  //       articleController.titleController.clear();
   //       description;
   //       print("Articledata------------$Article");
   //       print(Article.title);

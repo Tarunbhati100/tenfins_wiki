@@ -3,19 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:tenfins_wiki/buisness_logic/controller/addArticle_Controller.dart';
+import 'package:tenfins_wiki/buisness_logic/controller/articleController.dart';
 import 'package:tenfins_wiki/presentation/views/addArticle/add_article_desktop.dart';
 import 'package:tenfins_wiki/presentation/views/addArticle/add_article_mobile.dart';
 import 'package:tenfins_wiki/presentation/views/addArticle/add_article_tablet.dart';
 
-
 class AddArticlePage extends StatefulWidget {
-
-
- 
   const AddArticlePage({
     super.key,
-    
   });
 
   @override
@@ -23,12 +18,11 @@ class AddArticlePage extends StatefulWidget {
 }
 
 class _AddArticlePageState extends State<AddArticlePage> {
-  
-  AddArticleController addArticleController = Get.put(AddArticleController());
+  ArticleController articleController = Get.put(ArticleController());
 
   @override
   Widget build(BuildContext context) {
-   return ResponsiveBuilder(
+    return ResponsiveBuilder(
       builder: (context, sizingInformation) {
         // Check the sizing information here and return your UI
         if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {
@@ -38,7 +32,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
         if (sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
           return AddArticleTablet();
         }
-        return  AddArticleMobile();
+        return AddArticleMobile();
       },
     );
   }

@@ -1,4 +1,3 @@
-
 // ignore_for_file: non_constant_identifier_names, avoid_print, prefer_const_constructors
 
 import 'package:flutter/material.dart';
@@ -8,14 +7,12 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:sizer/sizer.dart';
-import 'package:tenfins_wiki/buisness_logic/controller/addArticle_Controller.dart';
-import 'package:tenfins_wiki/buisness_logic/controller/articleListcontroller.dart';
+import 'package:tenfins_wiki/buisness_logic/controller/articleController.dart';
 import 'package:tenfins_wiki/common/color.dart';
 import 'package:tenfins_wiki/common/widget.dart';
 import 'package:tenfins_wiki/data/article_db.dart';
 import 'package:tenfins_wiki/presentation/views/addArticle/add_article.dart';
 import 'package:tenfins_wiki/presentation/views/viewArticle/view_article_page.dart';
-
 
 class HomePageMobile extends StatefulWidget {
   const HomePageMobile({super.key});
@@ -25,14 +22,14 @@ class HomePageMobile extends StatefulWidget {
 }
 
 class _HomePageMobileState extends State<HomePageMobile> {
-  ArticleListController articleListController =
-      Get.put(ArticleListController());
+  // ArticleListController articleListController =
+  //     Get.put(ArticleListController());
 
-  AddArticleController addArticleController = Get.put(AddArticleController());
-
+  ArticleController articleController = Get.put(ArticleController());
   @override
   void initState() {
-    articleListController.getArticle();
+    // articleListController.getArticle();
+    articleController.getArticle();
     super.initState();
   }
 
@@ -62,92 +59,219 @@ class _HomePageMobileState extends State<HomePageMobile> {
             valueListenable: ArticleDataStore.box.listenable(),
             builder: (context, Box box, widget) {
               print("box============$box");
-              return box.length == 0 ?  Center(
-                      child: appText(title: "No Article",color: Colors.grey),
+              return box.length == 0
+                  ? Center(
+                      child: appText(title: "No Article", color: Colors.grey),
                     )
                   : SingleChildScrollView(
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        reverse: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: box.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          var ArticleData = box.getAt(index);
-                          print("ArticleData---------------$ArticleData");
-                          print(ArticleData.title);
-                          return InkWell(
-                            onTap: () {
-                              Get.to(ViewArticlePage(articleTitle: ArticleData.title, articleDescription: ArticleData.description));
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.1),
-                                  border: Border.all(color: AppColor.grey),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10))),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        RichText(
-                                          text: TextSpan(
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: ArticleData.title,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: AppColor.black,
-                                                      fontWeight:
-                                                          FontWeight.w500)),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          reverse: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: box.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var ArticleData = box.getAt(index);
+                            print("ArticleData---------------$ArticleData");
+                            print(ArticleData.title);
+                            return InkWell(
+                              onTap: () {
+                                Get.to(ViewArticlePage(
+                                    articleTitle: ArticleData.title,
+                                    articleDescription:
+                                        ArticleData.description));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                margin: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    border: Border.all(color: AppColor.grey),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10))),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                    text: ArticleData.title,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: AppColor.black,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                              ],
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Flexible(
+                                                child: Html(
+                                                  data: ArticleData.description,
+                                                  shrinkWrap: true,
+                                                ),
+                                              ),
                                             ],
                                           ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Flexible(
-                                              child: Html(
-                                                data: ArticleData.description,
-                                                shrinkWrap: true,
-                                              ),
-                                            ),
-                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            Get.to(AddArticlePage());
+                                            // articleController
+                                            //     .isUpdate.value = true;
+                                            // articleController
+                                            //     .titleController
+                                            //     .text = ArticleData.title;
+                                            // articleController.controller =
+                                            //     ArticleData.description;
+                                            // articleController.AddArticle;
+                                          },
+                                          child: const ImageIcon(
+                                            AssetImage(
+                                                "assets/images/edit.png"),
+                                            size: 30,
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                     Get.to(AddArticlePage());
-                                          // addArticleController
-                                          //     .isUpdate.value = true;
-                                          // addArticleController
-                                          //     .titleController
-                                          //     .text = ArticleData.title;
-                                          // addArticleController.controller =
-                                          //     ArticleData.description;
-                                          // addArticleController.AddArticle;
-                                        },
-                                        child: const ImageIcon(
-                                          AssetImage("assets/images/edit.png"),
-                                          size: 30,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }),
-                  );
-            })
+                            );
+                          }),
+                    );
+            }));
+  }
+}
+    // return Scaffold(
+    //     appBar: AppBar(
+    //       elevation: 0,
+    //       automaticallyImplyLeading: false,
+    //       title: appText(title: "Article List", color: Colors.white),
+    //       backgroundColor: AppColor.primary,
+    //       // ignore: prefer_const_literals_to_create_immutables
+    //       actions: [
+    //         Padding(
+    //           padding: EdgeInsets.only(right: 2.w),
+    //           child: InkWell(
+    //               onTap: () {
+    //                 Get.to(const AddArticlePage());
+    //               },
+    //               child: const ImageIcon(
+    //                 AssetImage("assets/images/createnew.png"),
+    //               )),
+    //         ),
+    //       ],
+    //     ),
+    //     body: ValueListenableBuilder(
+    //         valueListenable: ArticleDataStore.box.listenable(),
+    //         builder: (context, Box box, widget) {
+    //           print("box============$box");
+    //           return box.length == 0 ?  Center(
+    //                   child: appText(title: "No Article",color: Colors.grey),
+    //                 )
+    //               : SingleChildScrollView(
+    //                 child: ListView.builder(
+    //                     shrinkWrap: true,
+    //                     reverse: true,
+    //                     physics: const NeverScrollableScrollPhysics(),
+    //                     itemCount: box.length,
+    //                     itemBuilder: (BuildContext context, int index) {
+    //                       var ArticleData = box.getAt(index);
+    //                       print("ArticleData---------------$ArticleData");
+    //                       print(ArticleData.title);
+    //                       return InkWell(
+    //                         onTap: () {
+    //                           Get.to(ViewArticlePage(articleTitle: ArticleData.title, articleDescription: ArticleData.description));
+    //                         },
+    //                         child: Container(
+    //                           padding: const EdgeInsets.all(10),
+    //                           margin: const EdgeInsets.all(10),
+    //                           decoration: BoxDecoration(
+    //                               color: Colors.grey.withOpacity(0.1),
+    //                               border: Border.all(color: AppColor.grey),
+    //                               borderRadius: const BorderRadius.all(
+    //                                   Radius.circular(10))),
+    //                           child: Row(
+    //                             children: [
+    //                               Expanded(
+    //                                 child: Column(
+    //                                   crossAxisAlignment:
+    //                                       CrossAxisAlignment.start,
+    //                                   children: [
+    //                                     RichText(
+    //                                       text: TextSpan(
+    //                                         children: <TextSpan>[
+    //                                           TextSpan(
+    //                                               text: ArticleData.title,
+    //                                               style: TextStyle(
+    //                                                   fontSize: 16,
+    //                                                   color: AppColor.black,
+    //                                                   fontWeight:
+    //                                                       FontWeight.w500)),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                     Row(
+    //                                       children: [
+    //                                         Flexible(
+    //                                           child: Html(
+    //                                             data: ArticleData.description,
+    //                                             shrinkWrap: true,
+    //                                           ),
+    //                                         ),
+    //                                       ],
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                               ),
+    //                               Row(
+    //                                 children: [
+    //                                   InkWell(
+    //                                     onTap: () {
+    //                                  Get.to(AddArticlePage());
+    //                                       // articleController
+    //                                       //     .isUpdate.value = true;
+    //                                       // articleController
+    //                                       //     .titleController
+    //                                       //     .text = ArticleData.title;
+    //                                       // articleController.controller =
+    //                                       //     ArticleData.description;
+    //                                       // articleController.AddArticle;
+    //                                     },
+    //                                     child: const ImageIcon(
+    //                                       AssetImage("assets/images/edit.png"),
+    //                                       size: 30,
+    //                                     ),
+    //                                   ),
+    //                                 ],
+    //                               ),
+    //                             ],
+    //                           ),
+    //                         ),
+    //                       );
+    //                     }),
+    //               );
+    //         })
+
+
+
+
+
+
+
+
+
+
         // Column(
         //   children: [
         //     Padding(
@@ -227,6 +351,6 @@ class _HomePageMobileState extends State<HomePageMobile> {
         //         ),
         //   ],
         // ),
-        );
-  }
-}
+//         );
+//   }
+// }

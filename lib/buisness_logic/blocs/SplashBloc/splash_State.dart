@@ -2,10 +2,25 @@
 
 // ignore_for_file: file_names
 
-abstract class SplashState{}
+import 'package:equatable/equatable.dart';
 
-class InitialState extends SplashState {}
+abstract class SplashState extends Equatable{
+  const SplashState();
+}
 
-class LoadingState extends SplashState {}
+class InitialState extends SplashState {
+  @override
 
-class LoadedState extends SplashState {}
+  List<Object?> get props =>[];
+}
+
+class LoadingState extends SplashState {
+  @override
+  
+  List<Object?> get props => [];
+}
+
+class LoadedState extends SplashState {
+  @override
+  List<Object?> get props => [];
+}

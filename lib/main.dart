@@ -1,7 +1,12 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tenfins_wiki/model/article.dart';
 import 'package:tenfins_wiki/model/databaseModel.dart';
 import 'package:tenfins_wiki/presentation/views/splashscreen.dart';
 import 'common/color.dart';
@@ -14,14 +19,21 @@ void main() async {
   ));
   WidgetsFlutterBinding.ensureInitialized();
 
-   await Hive.initFlutter();
+  //-================ Start Hive ==========================
+  await Hive.initFlutter();
 
   /// Register Hive Adapter
   Hive.registerAdapter<Articlemodel>(ArticleModelAdapter());
 
   /// Open box
   await Hive.openBox<Articlemodel>("ArticleBox");
-  
+//-================ End Start Hive ==========================
+
+  //-================ Start Isar ==========================
+  final dir = await getApplicationSupportDirectory();
+  final isar = await Isar.open([ArticleDataSchema], directory: dir.path);
+  //-================ End Isar ==========================
+
   runApp(const MyApp());
 }
 
@@ -33,7 +45,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool loginstatus = false;
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([

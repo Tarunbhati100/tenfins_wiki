@@ -8,24 +8,20 @@ import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/common/color.dart';
 import 'package:tenfins_wiki/common/widget.dart';
 
-
-
-class ViewArticleDesktop extends StatefulWidget {
+class ViewArticleDesktop extends StatelessWidget {
   String desktopTitle;
   var desktopDescription;
-   ViewArticleDesktop({super.key,required this.desktopTitle,required this.desktopDescription});
+  ViewArticleDesktop(
+      {super.key,
+      required this.desktopTitle,
+      required this.desktopDescription});
 
-  @override
-  State<ViewArticleDesktop> createState() => _ViewArticleDesktopState();
-}
-
-class _ViewArticleDesktopState extends State<ViewArticleDesktop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.primary,
-        title: appText(title:widget.desktopTitle),
+        title: appText(title: desktopTitle),
         centerTitle: true,
         leading: InkWell(
             onTap: () {
@@ -33,14 +29,13 @@ class _ViewArticleDesktopState extends State<ViewArticleDesktop> {
             },
             child: const Icon(Icons.arrow_back_rounded)),
       ),
-      body:  SingleChildScrollView(
-        child: Padding(
-          padding:  EdgeInsets.symmetric(horizontal:3.w,vertical: 1.h),
-          child: Html(
-            data: widget.desktopDescription,
-            ),
-        )),
-      
+      body: SingleChildScrollView(
+          child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+        child: Html(
+          data: desktopDescription,
+        ),
+      )),
     );
   }
 }

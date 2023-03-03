@@ -1,9 +1,12 @@
-class Article{
-  final String title;
-  final String subtitle;
+// ignore_for_file: camel_case_types
 
-  Article({
-    required this.title,
-    required this.subtitle,
-  });
+import 'package:isar/isar.dart';
+
+part 'article.g.dart';
+
+@Collection()
+class articleData {
+  Id id = Isar.autoIncrement;
+  String? title;
+  String? description;
 }

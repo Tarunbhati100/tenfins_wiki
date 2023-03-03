@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:hive/hive.dart';
+import 'package:isar/isar.dart';
 
 class ArticleModel {
   int? id;
@@ -31,6 +32,6 @@ class Articlemodel extends HiveObject {
     required this.id,
     required this.title,
     required this.description,
-  });
+  }); 
 }
 
