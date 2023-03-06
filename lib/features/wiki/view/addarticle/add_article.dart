@@ -28,7 +28,6 @@ class _AddArticlePageState extends State<AddArticlePage> {
         if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {
           return AddArticleDesktop();
         }
-
         if (sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
           return AddArticleTablet();
         }

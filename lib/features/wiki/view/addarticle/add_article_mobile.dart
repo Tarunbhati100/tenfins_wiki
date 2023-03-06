@@ -35,7 +35,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.primary,
-          title: appText(title: "Create New Wiki"),
+          title: appText(title: "Create New Article"),
           elevation: 0,
         ),
         body: SingleChildScrollView(
@@ -156,7 +156,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                 customButton(
                   width: 50.w,
                   height: 6.h,
-                  title: "Create Wiki",
+                  title: "Create Article",
                   textColor: AppColor.whiteColor,
                   onTap: addArticleController.addArticle,
                 ),
