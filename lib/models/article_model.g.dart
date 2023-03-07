@@ -14,7 +14,19 @@ class ArticleModelAdapter extends TypeAdapter<Articlemodel> {
     return Articlemodel(
       id: fields[0] as int,
       title: fields[1] as String,
-      description: fields[2] as String,
+      shortdescription: fields[3] as String,
+      category: fields[4] as String,
+      keywords: fields[5] as String,
+      author: fields[6] as String,
+      views: fields[7] as String,
+      likes: fields[8] as String,
+      mentions: fields[9] as String,
+      stars: fields[10] as String,
+      tags: fields[11] as String,
+      type: fields[12] as String,
+      lastUpdated: fields[13] as String,
+      dateTime: fields[14] as String,
+      content: fields[15] as String,
     );
   }
 
@@ -27,7 +39,31 @@ class ArticleModelAdapter extends TypeAdapter<Articlemodel> {
       ..writeByte(1)
       ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.description);
+      ..write(obj.shortdescription)
+      ..writeByte(3)
+      ..write(obj.category)
+      ..writeByte(4)
+      ..write(obj.keywords)
+      ..writeByte(5)
+      ..write(obj.author)
+      ..writeByte(6)
+      ..write(obj.views)
+      ..writeByte(7)
+      ..write(obj.likes)
+      ..writeByte(8)
+      ..write(obj.mentions)
+      ..writeByte(9)
+      ..write(obj.stars)
+      ..writeByte(10)
+      ..write(obj.tags)
+      ..writeByte(11)
+      ..write(obj.type)
+      ..writeByte(12)
+      ..write(obj.lastUpdated)
+      ..writeByte(13)
+      ..write(obj.dateTime)
+      ..writeByte(14)
+      ..write(obj.content);
   }
 
   @override

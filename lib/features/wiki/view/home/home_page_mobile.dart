@@ -23,6 +23,7 @@ class HomePageMobile extends StatefulWidget {
 
 class _HomePageMobileState extends State<HomePageMobile> {
   Article articleController = Get.put(Article());
+  String searchtxt = "";
 
   @override
   void initState() {
@@ -51,89 +52,144 @@ class _HomePageMobileState extends State<HomePageMobile> {
           ),
         ],
       ),
-      body: ValueListenableBuilder(
-        valueListenable: ArticleDataStore.box.listenable(),
-        builder: (context, Box box, widget) {
-          return box.length == 0
-              ? Center(
-                  child: appText(title: "No Article", color: AppColor.grey),
-                )
-              : SingleChildScrollView(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      reverse: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: box.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var articleData = box.getAt(index);
-                        return InkWell(
-                          onTap: () {
-                            Get.to(ViewArticlePage(
-                                articleTitle: articleData.title,
-                                articleDescription: articleData.description));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: AppColor.grey.withOpacity(0.1),
-                              border: Border.all(color: AppColor.grey),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                                text: articleData.title,
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: AppColor.black,
-                                                    fontWeight:
-                                                        FontWeight.w500)),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+          //   child: SizedBox(
+          //     height: 7.h,
+          //     child: CupertinoSearchTextField(
+          //       controller: articleController.searchArticle,
+          //       onChanged: (String value) {
+          //         setState(() {
+          //           searchtxt = articleController.searchArticle.text;
+          //         });
+          //         print("searchtxt : $searchtxt");
+          //         // setState(() {
+          //         //   searchList = tempList
+          //         //       .where((element) => element["title"]!
+          //         //           .toLowerCase()
+          //         //           .contains(value.toLowerCase()))
+          //         //       .toList();
+          //         // });
+          //         // print('The text has changed to : $value');
+          //       },
+          //     ),
+          //   ),
+          // ),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: ArticleDataStore.box.listenable(),
+              builder: (context, Box box, widget) {
+                var results = searchtxt.isEmpty
+                    ? box.values.toList() // whole list
+                    : box.values
+                        .where((c) => c.title.toLowerCase().contains(searchtxt))
+                        .toList();
+                return results.isEmpty
+                    ? Center(
+                        child:
+                            appText(title: "No Article", color: AppColor.grey),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        reverse: true,
+                        //    physics: const BouncingScrollPhysics(),
+                        itemCount: box.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var articleData = box.getAt(index);
+                          //  print("articleData : ${articleData.toJson()}");
+                          //  print("articleData : ${inspect(articleData.toString())}");
+                          //   print("articleData : ${jsonEncode(articleData)}");
+                          // print("articleData : ${articleData.title}");
+                          // print("articleData : ${articleData.description}");
+                          return InkWell(
+                            onTap: () {
+                              Get.to(ViewArticlePage(
+                                  articleTitle: articleData.title,
+                                  articleDescription:
+                                      articleData.shortdescription));
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              margin: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: AppColor.grey.withOpacity(0.1),
+                                border: Border.all(color: AppColor.grey),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  text: articleData.title,
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: AppColor.black,
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                            ],
+                                          ),
+                                        ),
+                                        // RichText(
+                                        //   text: TextSpan(
+                                        //     children: <TextSpan>[
+                                        //       TextSpan(
+                                        //           text: articleData
+                                        //               .shortdescription,
+                                        //           style: TextStyle(
+                                        //               fontSize: 16,
+                                        //               color: AppColor.black,
+                                        //               fontWeight:
+                                        //                   FontWeight.w500)),
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Html(
+                                                data: articleData.content,
+                                                shrinkWrap: true,
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Html(
-                                              data: articleData.description,
-                                              shrinkWrap: true,
-                                            ),
-                                          ),
-                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Get.to(const AddArticlePage());
+                                        },
+                                        child: const ImageIcon(
+                                          AssetImage(AppImage.editicon),
+                                          size: 30,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Get.to(const AddArticlePage());
-                                      },
-                                      child: const ImageIcon(
-                                        AssetImage(AppImage.editicon),
-                                        size: 30,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                );
-        },
+                          );
+                        });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -24,11 +24,47 @@ class Articlemodel extends HiveObject {
   @HiveField(1)
   final String title;
   @HiveField(2)
-  final String description;
+  final String shortdescription;
+  @HiveField(3)
+  final String category;
+  @HiveField(4)
+  final String keywords;
+  @HiveField(5)
+  final String author;
+  @HiveField(6)
+  final String views;
+  @HiveField(7)
+  final String likes;
+  @HiveField(8)
+  final String mentions;
+  @HiveField(9)
+  final String stars;
+  @HiveField(10)
+  final String tags;
+  @HiveField(11)
+  final String type;
+  @HiveField(12)
+  final String lastUpdated;
+  @HiveField(13)
+  final String dateTime;
+  @HiveField(14)
+  final String content;
 
   Articlemodel({
     required this.id,
     required this.title,
-    required this.description,
+    required this.shortdescription,
+    required this.category,
+    required this.keywords,
+    required this.author,
+    required this.views,
+    required this.likes,
+    required this.mentions,
+    required this.stars,
+    required this.tags,
+    required this.type,
+    required this.lastUpdated,
+    required this.dateTime,
+    required this.content,
   });
 }
