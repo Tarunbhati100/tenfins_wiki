@@ -6,12 +6,12 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/utils/color.dart';
+import 'package:tenfins_wiki/widgets/widget.dart';
 
 class ViewArticleMobile extends StatefulWidget {
-  String mobileTitle;
-  var mobileDescription;
-  ViewArticleMobile(
-      {super.key, required this.mobileTitle, required this.mobileDescription});
+  var articleData;
+
+  ViewArticleMobile({super.key, required this.articleData});
 
   @override
   State<ViewArticleMobile> createState() => _ViewArticleMobileState();
@@ -22,7 +22,9 @@ class _ViewArticleMobileState extends State<ViewArticleMobile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: AppColor.primary,
+        title: appText(title: widget.articleData.title),
         centerTitle: true,
         leading: InkWell(
             onTap: () {
@@ -31,11 +33,29 @@ class _ViewArticleMobileState extends State<ViewArticleMobile> {
             child: const Icon(Icons.arrow_back_rounded)),
       ),
       body: SingleChildScrollView(
-          child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-        child: Html(
-          data: widget.mobileDescription,
-        ),
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+            child: appText(
+                title: widget.articleData.shortdescription,
+                color: AppColor.black,
+                fontSize: 22,
+                fontWeight: FontWeight.w600),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+            child: Html(
+              data: widget.articleData.content,
+              style: {
+                "body": Style(
+                  color: AppColor.black.withOpacity(0.6),
+                )
+              },
+            ),
+          ),
+        ],
       )),
     );
   }

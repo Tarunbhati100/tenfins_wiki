@@ -32,24 +32,24 @@ class ArticleDB {
   }
 
   // Save Database
-  createArticleDB(ArticleModel cardModel) async {
-    var dbClient = await db;
-    await dbClient.transaction((txn) async {
-      return await txn.rawInsert(
-          "INSERT INTO $TABLE($COL_title, $COL_message) VALUES ('${cardModel.title}', '${cardModel.description}')");
-    });
-  }
+  // createArticleDB(ArticleModel cardModel) async {
+  //   var dbClient = await db;
+  //   await dbClient.transaction((txn) async {
+  //     return await txn.rawInsert(
+  //         "INSERT INTO $TABLE($COL_title, $COL_message) VALUES ('${cardModel.title}', '${cardModel.description}')");
+  //   });
+  // }
 
   // Get Database
-  getArticleData() async {
-    var dbClient = await db;
-    List data = await dbClient.rawQuery("SELECT * FROM $TABLE");
-    List cardModel = [];
-    for (int i = 0; i < data.length; i++) {
-      cardModel.add(ArticleModel.fromMap(data[i]));
-    }
-    return cardModel;
-  }
+  // getArticleData() async {
+  //   var dbClient = await db;
+  //   List data = await dbClient.rawQuery("SELECT * FROM $TABLE");
+  //   List cardModel = [];
+  //   for (int i = 0; i < data.length; i++) {
+  //     cardModel.add(ArticleModel.fromMap(data[i]));
+  //   }
+  //   return cardModel;
+  // }
 
   // Check Database
   getArticleDataWhere(String id) async {
@@ -85,6 +85,7 @@ class ArticleDataStore {
   /// Add new article
   Future<void> addArticle({required Articlemodel articlemodel}) async {
     await box.add(articlemodel);
+    articlemodel.save();
   }
 
   /// show article list

@@ -6,13 +6,9 @@ import 'package:tenfins_wiki/features/wiki/view/viewarticle/view_article_mobile.
 import 'package:tenfins_wiki/features/wiki/view/viewarticle/view_article_tablet.dart';
 
 class ViewArticlePage extends StatefulWidget {
-  String articleTitle;
-  var articleDescription;
+  var articleData;
 
-  ViewArticlePage(
-      {super.key,
-      required this.articleTitle,
-      required this.articleDescription});
+  ViewArticlePage({super.key, required this.articleData});
 
   @override
   State<ViewArticlePage> createState() => _ViewArticlePageState();
@@ -25,21 +21,14 @@ class _ViewArticlePageState extends State<ViewArticlePage> {
       builder: (context, sizingInformation) {
         // Check the sizing information here and return your UI
         if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {
-          return ViewArticleDesktop(
-              desktopTitle: widget.articleTitle,
-              desktopDescription: widget.articleDescription);
+          return ViewArticleDesktop(articleData: widget.articleData);
         }
 
         if (sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
-          return ViewArticleTablet(
-              tabletTitle: widget.articleTitle,
-              tabletDescription: widget.articleDescription);
+          return ViewArticleTablet(articleData: widget.articleData);
         }
 
-        return ViewArticleMobile(
-          mobileTitle: widget.articleTitle,
-          mobileDescription: widget.articleDescription,
-        );
+        return ViewArticleMobile(articleData: widget.articleData);
       },
     );
   }

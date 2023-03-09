@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names, unused_local_variable, unnecessary_string_escapes, avoid_print, prefer_typing_uninitialized_variables
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,80 +55,49 @@ class Article extends GetxController {
     update();
   }
 
-  getArticle() async {
-    getArticleList = await ArticleDB().getArticleData();
-    update();
-  }
+  // getArticle() async {
+  //   getArticleList = await ArticleDB().getArticleData();
+  //   update();
+  // }
 
   addArticle() async {
     var description = await controller.getText();
     if (description.contains('src=\"data:')) {
       description = '<>';
     }
-    if (isUpdate.value) {
-      final article = Articlemodel(
-        id: 1,
-        title: titleController.text,
-        shortdescription: shortDescription.text,
-        category: selectedCategory,
-        keywords: keywords.text,
-        author: author.text,
-        views: "",
-        likes: "",
-        mentions: mentions.text,
-        stars: stars.text,
-        tags: tags.text,
-        type: selectedType,
-        lastUpdated: "",
-        dateTime: "",
-        content: description,
-      );
-      articledata
-          .updateArticle(articlemodel: article, index: article.id)
-          .then((value) {
-        titleController.clear();
-        shortDescription.clear();
-        keywords.clear();
-        author.clear();
-        mentions.clear();
-        stars.clear();
-        tags.clear();
-        selectedType;
-        selectedCategory;
-        description;
-      });
-    } else {
-      final article = Articlemodel(
-        id: 1,
-        title: titleController.text,
-        shortdescription: shortDescription.text,
-        category: selectedCategory,
-        keywords: keywords.text,
-        author: author.text,
-        views: "",
-        likes: "",
-        mentions: mentions.text,
-        stars: stars.text,
-        tags: tags.text,
-        type: selectedType,
-        lastUpdated: "",
-        dateTime: "",
-        content: description,
-      );
-      articledata.addArticle(articlemodel: article).then((value) {
-        titleController.clear();
-        shortDescription.clear();
-        keywords.clear();
-        author.clear();
-        mentions.clear();
-        stars.clear();
-        tags.clear();
-        selectedType;
-        selectedCategory;
-        description;
-        update();
-        Get.to(const HomePage());
-      });
-    }
+    print("Update");
+    print(selectedCategory);
+
+    final article = Articlemodel()
+      ..id = 1
+      ..title = titleController.text
+      ..shortdescription = shortDescription.text
+      ..category = selectedCategory.toString()
+      ..keywords = keywords.text
+      ..author = author.text
+      ..views = ""
+      ..likes = ""
+      ..mentions = mentions.text
+      ..stars = stars.text
+      ..tags = tags.text
+      ..type = selectedType.toString()
+      ..lastUpdated = ""
+      ..dateTime = ""
+      ..content = description;
+
+    articledata.addArticle(articlemodel: article).then((value) {
+      titleController.clear();
+      shortDescription.clear();
+      keywords.clear();
+      author.clear();
+      mentions.clear();
+      stars.clear();
+      tags.clear();
+      selectedType;
+      selectedCategory;
+      description;
+      update();
+      Get.to(const HomePage());
+    });
   }
 }

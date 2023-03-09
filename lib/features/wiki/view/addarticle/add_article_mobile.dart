@@ -12,7 +12,7 @@ import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
 
 class AddArticleMobile extends StatefulWidget {
-  ArticleModel? articleModel;
+  Articlemodel? articleModel;
   AddArticleMobile({super.key, this.articleModel});
 
   @override
@@ -43,6 +43,15 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
           backgroundColor: AppColor.primary,
           title: appText(title: "Create New Article"),
           elevation: 0,
+            actions: [
+              Padding(
+                padding:  EdgeInsets.only(right:1.w),
+                child: TextButton(
+                          onPressed: () {   
+                addArticleController.addArticle();           
+                          }, 
+                          child: appText(title:"Save",color: AppColor.whiteColor,fontSize: 20 )),
+              )],
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -286,16 +295,16 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                       SizedBox(
                         height: 3.h,
                       ),
-                      customButton(
-                        width: 50.w,
-                        height: 6.h,
-                        title: "Create Article",
-                        textColor: AppColor.whiteColor,
-                        onTap: addArticleController.addArticle,
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
+                      // customButton(
+                      //   width: 50.w,
+                      //   height: 6.h,
+                      //   title: "Create Article",
+                      //   textColor: AppColor.whiteColor,
+                      //   onTap: addArticleController.addArticle,
+                      // ),
+                      // SizedBox(
+                      //   height: 3.h,
+                      // ),
                     ]);
               },
             ),

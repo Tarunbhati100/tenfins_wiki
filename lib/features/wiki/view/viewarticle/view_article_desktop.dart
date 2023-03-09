@@ -9,12 +9,9 @@ import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
 
 class ViewArticleDesktop extends StatefulWidget {
-  String desktopTitle;
-  var desktopDescription;
-  ViewArticleDesktop(
-      {super.key,
-      required this.desktopTitle,
-      required this.desktopDescription});
+  var articleData;
+
+  ViewArticleDesktop({super.key, required this.articleData});
 
   @override
   State<ViewArticleDesktop> createState() => _ViewArticleDesktopState();
@@ -26,7 +23,7 @@ class _ViewArticleDesktopState extends State<ViewArticleDesktop> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.primary,
-        title: appText(title: widget.desktopTitle),
+        title: appText(title: widget.articleData.title),
         centerTitle: true,
         leading: InkWell(
             onTap: () {
@@ -35,11 +32,29 @@ class _ViewArticleDesktopState extends State<ViewArticleDesktop> {
             child: const Icon(Icons.arrow_back_rounded)),
       ),
       body: SingleChildScrollView(
-          child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-        child: Html(
-          data: widget.desktopDescription,
-        ),
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+            child: appText(
+                title: widget.articleData.shortdescription,
+                color: AppColor.black,
+                fontSize: 22,
+                fontWeight: FontWeight.w600),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+            child: Html(
+              data: widget.articleData.content,
+              style: {
+                "body": Style(
+                  color: AppColor.black.withOpacity(0.6),
+                )
+              },
+            ),
+          ),
+        ],
       )),
     );
   }

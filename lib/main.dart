@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:tenfins_wiki/features/wiki/view/splashscreen.dart';
-import 'package:tenfins_wiki/models/article_model.g.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/utils/string.dart';
@@ -18,7 +17,7 @@ void main() async {
 
   /// Open box using Hive & Initializ
   await Hive.initFlutter();
-  Hive.registerAdapter<Articlemodel>(ArticleModelAdapter());
+  Hive.registerAdapter<Articlemodel>(ArticlemodelAdapter());
   await Hive.openBox<Articlemodel>("WikiBox");
 
   runApp(const MyApp());

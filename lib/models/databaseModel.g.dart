@@ -1,7 +1,12 @@
-import 'package:hive/hive.dart';
-import 'package:tenfins_wiki/models/databaseModel.dart';
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
-class ArticleModelAdapter extends TypeAdapter<Articlemodel> {
+part of 'databaseModel.dart';
+
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class ArticlemodelAdapter extends TypeAdapter<Articlemodel> {
   @override
   final int typeId = 0;
 
@@ -11,29 +16,28 @@ class ArticleModelAdapter extends TypeAdapter<Articlemodel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Articlemodel(
-      id: fields[0] as int,
-      title: fields[1] as String,
-      shortdescription: fields[3] as String,
-      category: fields[4] as String,
-      keywords: fields[5] as String,
-      author: fields[6] as String,
-      views: fields[7] as String,
-      likes: fields[8] as String,
-      mentions: fields[9] as String,
-      stars: fields[10] as String,
-      tags: fields[11] as String,
-      type: fields[12] as String,
-      lastUpdated: fields[13] as String,
-      dateTime: fields[14] as String,
-      content: fields[15] as String,
-    );
+    return Articlemodel()
+      ..id = fields[0] as int?
+      ..title = fields[1] as String?
+      ..shortdescription = fields[2] as String?
+      ..category = fields[3] as String?
+      ..keywords = fields[4] as String?
+      ..author = fields[5] as String?
+      ..views = fields[6] as String?
+      ..likes = fields[7] as String?
+      ..mentions = fields[8] as String?
+      ..stars = fields[9] as String?
+      ..tags = fields[10] as String?
+      ..type = fields[11] as String?
+      ..lastUpdated = fields[12] as String?
+      ..dateTime = fields[13] as String?
+      ..content = fields[14] as String?;
   }
 
   @override
   void write(BinaryWriter writer, Articlemodel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -72,7 +76,7 @@ class ArticleModelAdapter extends TypeAdapter<Articlemodel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ArticleModelAdapter &&
+      other is ArticlemodelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
