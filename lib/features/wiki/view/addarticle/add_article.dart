@@ -7,10 +7,19 @@ import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
 import 'package:tenfins_wiki/features/wiki/view/addarticle/add_article_desktop.dart';
 import 'package:tenfins_wiki/features/wiki/view/addarticle/add_article_mobile.dart';
 import 'package:tenfins_wiki/features/wiki/view/addarticle/add_article_tablet.dart';
+import 'package:tenfins_wiki/models/databaseModel.dart';
 
 class AddArticlePage extends StatefulWidget {
-  const AddArticlePage({
+  bool? newArticle;
+  bool? oldArticle;
+  int? index;
+  Articlemodel? articlemodel;
+  AddArticlePage({
     super.key,
+    this.newArticle,
+    this.oldArticle,
+    this.articlemodel,
+    this.index,
   });
 
   @override
@@ -26,12 +35,33 @@ class _AddArticlePageState extends State<AddArticlePage> {
       builder: (context, sizingInformation) {
         // Check the sizing information here and return your UI
         if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {
-          return AddArticleDesktop();
+          return AddArticleDesktop(
+            NewDesktopArticle:
+                widget.newArticle == true && widget.oldArticle == false
+                    ? true
+                    : false,
+            DesktopIndex: widget.index,
+            articleModel: widget.articlemodel,
+          );
         }
         if (sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
-          return AddArticleTablet();
+          return AddArticleTablet(
+            newTabletArticle:
+                widget.newArticle == true && widget.oldArticle == false
+                    ? true
+                    : false,
+            tabletIndex: widget.index,
+            articleModel: widget.articlemodel,
+          );
         }
-        return AddArticleMobile();
+        return AddArticleMobile(
+          NewMobileArticle:
+              widget.newArticle == true && widget.oldArticle == false
+                  ? true
+                  : false,
+          mobileIndex: widget.index,
+          articleModel: widget.articlemodel,
+        );
       },
     );
   }

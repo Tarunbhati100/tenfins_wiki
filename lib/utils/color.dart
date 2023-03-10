@@ -15,9 +15,9 @@ class AppColor {
 
   static Color backgroundcolor = const Color(0xFFFAFAFA);
 
-  static Color primary = const Color(0xFF4C8DF1);
+  static Color primary = const Color(0xFF607D8B);
 
-  static Color grey = const Color(0xFFC4C4C4);
+  static Color grey = const Color(0xFF808080);
 
   static Color textfieldbordercolor = const Color(0xFFACAAA0);
 
@@ -26,4 +26,6 @@ class AppColor {
   static Color secondary1 = const Color(0xFF4C8DF1);
 
   static Color button = const Color(0xff4DC6FD);
+  
+  static Color gradient = const Color(0xffCBD9EB);
 }

@@ -15,7 +15,9 @@ import 'package:tenfins_wiki/widgets/widget.dart';
 
 class AddArticleTablet extends StatefulWidget {
   Articlemodel? articleModel;
-  AddArticleTablet({super.key, this.articleModel});
+  bool newTabletArticle;
+  int?tabletIndex;
+  AddArticleTablet({super.key, this.articleModel,this.tabletIndex,required this.newTabletArticle});
 
   @override
   State<AddArticleTablet> createState() => _AddArticleTabletState();
@@ -37,7 +39,7 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.primary,
-          title: appText(title: "Create New Article"),
+          title: appText(title:widget.newTabletArticle == true ? "Create New Article" : "Edit Article"),
           elevation: 0,
             actions: [
               Padding(
@@ -49,262 +51,303 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                           child: appText(title:"Save",color: AppColor.whiteColor,fontSize: 20 )),
               )],
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Obx(
-              () {
-                return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 1.h,
-                      ),
-                      textField2(
-                          controller: addArticleController.titleController,
-                          hint: "Enter Title",
-                          hight: 8.h,
-                          readOnly: false,
-                          textInputAction: TextInputAction.done),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      textField2(
-                          controller: addArticleController.shortDescription,
-                          hint: "Short Description",
-                          hight: 8.h,
-                          readOnly: false,
-                          textInputAction: TextInputAction.done),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Container(
-                        // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFFACAAA0)),
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(7),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.blueGrey[50]!, blurRadius: 1)
-                          ],
+        body: Padding(
+        padding:  EdgeInsets.symmetric(horizontal:6.w,vertical: 3.h),
+        child: Container(
+          padding: EdgeInsets.all(1.w),
+          decoration: BoxDecoration(
+            color: AppColor.whiteColor,
+            borderRadius: BorderRadius.circular(1.5.w),
+            boxShadow: [
+              BoxShadow(
+                color: AppColor.grey.withOpacity(0.7),
+                blurRadius: 15
+              )
+            ]
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding:  EdgeInsets.symmetric(horizontal: 1.w),
+              child: Obx(
+                () {
+                  return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 1.h,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: DropdownButton(
-                            isExpanded: true,
-                            underline: Container(),
-                            hint: const Text('Select Category'),
-                            value: addArticleController.selectedCategory,
-                            onChanged: (newValue) {
-                              setState(() {
-                                addArticleController.selectedCategory =
-                                    newValue;
-                              });
-                            },
-                            items: addArticleController
-                                .articleCategoryList.value
-                                .map((category) {
-                              return DropdownMenuItem(
-                                value: category['categoryname'],
-                                child: Text("${category['categoryname']}"),
-                              );
-                            }).toList(),
-                          ),
+                        textField2(
+                            controller: addArticleController.titleController,
+                            hint: "Enter Title",
+                            hight: 8.h,
+                            readOnly: false,
+                            textInputAction: TextInputAction.done),
+                        SizedBox(
+                          height: 3.h,
                         ),
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      textField2(
-                          controller: addArticleController.keywords,
-                          hint: "Keywords",
-                          hight: 8.h,
-                          readOnly: false,
-                          textInputAction: TextInputAction.done),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      textField2(
-                          controller: addArticleController.author,
-                          hint: "Author",
-                          hight: 8.h,
-                          readOnly: false,
-                          textInputAction: TextInputAction.done),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Container(
-                        // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFFACAAA0)),
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(7),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.blueGrey[50]!, blurRadius: 1)
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: DropdownButton(
-                            isExpanded: true,
-                            underline: Container(),
-                            hint: const Text('Select Type'),
-                            value: addArticleController.selectedType,
-                            onChanged: (newValue) {
-                              setState(() {
-                                addArticleController.selectedType = newValue;
-                              });
-                            },
-                            items: addArticleController.articleTypeList.value
-                                .map((value) {
-                              return DropdownMenuItem(
-                                value: value['title'],
-                                child: Text("${value['title']}"),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      textField2(
-                          controller: addArticleController.stars,
-                          hint: "Stars",
-                          hight: 8.h,
-                          readOnly: false,
-                          textInputAction: TextInputAction.done),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      textField2(
-                          controller: addArticleController.tags,
-                          hint: "Tags",
-                          hight: 8.h,
-                          readOnly: false,
-                          textInputAction: TextInputAction.done),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      HtmlEditor(
-                        controller: addArticleController.controller,
-                        htmlEditorOptions: const HtmlEditorOptions(
-                          hint: "Write Your Article..",
-                          shouldEnsureVisible: true,
-                          autoAdjustHeight: true,
-                          adjustHeightForKeyboard: true,
-                        ),
-                        htmlToolbarOptions: HtmlToolbarOptions(
-                          toolbarPosition: ToolbarPosition.aboveEditor,
-                          toolbarType: ToolbarType.nativeExpandable,
-                          renderBorder: true,
-                          toolbarItemHeight: 40,
-                          gridViewHorizontalSpacing: 5,
-                          gridViewVerticalSpacing: 5,
-                          buttonBorderWidth: 2,
-                          //initiallyExpanded: true,
-                          defaultToolbarButtons: [
-                            const StyleButtons(),
-                            const FontButtons(),
-                            const FontSettingButtons(),
-                            const ColorButtons(),
-                            const ListButtons(),
-                            const ParagraphButtons(caseConverter: true),
-                            const InsertButtons(),
-                            const OtherButtons(
-                                copy: true,
-                                codeview: false,
-                                undo: false,
-                                redo: false,
-                                paste: true),
-                          ],
-                          customToolbarButtons: <Widget>[
-                            OutlinedButton(
-                              onPressed: showdialog,
-                              child: const Icon(
-                                Icons.coffee,
-                                color: Colors.black,
+                        
+                        textField2(
+                            controller: addArticleController.shortDescription,
+                            hint: "Short Description",
+                            hight: 8.h,
+                            readOnly: false,
+                            textInputAction: TextInputAction.done),
+                       SizedBox(height: 3.h,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: const Color(0xFFACAAA0)),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(7),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.blueGrey[50]!, blurRadius: 1)
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    underline: Container(),
+                                    hint: const Text('Select Category'),
+                                    value: addArticleController.selectedCategory,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        addArticleController.selectedCategory =
+                                            newValue;
+                                      });
+                                    },
+                                    items: addArticleController
+                                        .articleCategoryList.value
+                                        .map((category) {
+                                      return DropdownMenuItem(
+                                        value: category['categoryname'],
+                                        child: Text("${category['categoryname']}"),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
                               ),
                             ),
+                             SizedBox(
+                               width: 2.w,
+                            ),
+                            Expanded(
+                              child: Container(                                                         // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                              border: Border.all(color: const Color(0xFFACAAA0)),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(7),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.blueGrey[50]!, blurRadius: 1)
+                              ],
+                            ),
+                                 child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: DropdownButton(
+                                isExpanded: true,
+                                underline: Container(),
+                                hint: const Text('Select Type'),
+                                value: addArticleController.selectedType,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    addArticleController.selectedType = newValue;
+                                  });
+                                },
+                                items: addArticleController.articleTypeList.value
+                                    .map((value) {
+                                  return DropdownMenuItem(
+                                    value: value['title'],
+                                    child: Text("${value['title']}"),
+                                  );
+                                }).toList(),
+                              ),
+                                ),
+                             ),
+                            ),
                           ],
-                          onButtonPressed: (ButtonType type, bool? status,
-                              Function? updateStatus) {
-                            return true;
-                          },
-                          onDropdownChanged: (DropdownType type,
-                              dynamic changed,
-                              Function(dynamic)? updateSelectedItem) {
-                            return true;
-                          },
-                          mediaLinkInsertInterceptor:
-                              (String url, InsertFileType type) {
-                            return true;
-                          },
-                          mediaUploadInterceptor:
-                              (PlatformFile file, InsertFileType type) async {
-                            print(file.name); //filename
-                            print(file.size); //size in bytes
-                            print(file.extension);
-                            return true;
-                          },
                         ),
-                        callbacks: Callbacks(onPaste: () {
-                          showMsg(context, msg: 'Paste', color: Colors.black26);
-                          print("");
-                        }, onImageUploadError: (FileUpload? file,
-                            String? base64Str, UploadError error) {
-                          print(describeEnum(error));
-                          print(base64Str ?? '');
-                          if (file != null) {
-                            print(file.name);
-                            print(file.size);
-                            print(file.type);
-                          }
-                        }),
-                        otherOptions: const OtherOptions(
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                border: Border.fromBorderSide(BorderSide(
-                                    color: Colors.black, width: 1.5))),
-                            height: 550),
-                        plugins: [
-                          SummernoteAtMention(
-                              getSuggestionsMobile: (String value) {
-                                List<String> mentions = [
-                                  'test1',
-                                  'test2',
-                                  'test3'
-                                ];
-                                return mentions
-                                    .where((element) => element.contains(value))
-                                    .toList();
-                              },
-                              mentionsWeb: ['test1', 'test2', 'test3'],
-                              onSelect: (String value) {
-                                print(value);
-                              }),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      // customButton(
-                      //   width: 50.w,
-                      //   height: 6.h,
-                      //   title: "Create Article",
-                      //   textColor: AppColor.whiteColor,
-                      //   onTap: addArticleController.addArticle,
-                      // ),
-                      // SizedBox(
-                      //   height: 3.h,
-                      // ),
-                    ]);
-              },
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        Row(
+                          children: 
+                                [
+                                  Expanded(
+                                    child:
+                                     textField2(
+                                        controller: addArticleController.keywords,
+                                         hint: "Keywords",
+                                         hight: 8.h,
+                                         readOnly: false,
+                                         textInputAction: TextInputAction.done),
+                                  ),
+                                 SizedBox(
+                               width: 2.w,
+                            ),
+                                  Expanded(
+                                    child:  textField2(
+                                      controller: addArticleController.author,
+                                       hint: "Author",
+                                       hight: 8.h,
+                                       readOnly: false,
+                                      textInputAction: TextInputAction.done),
+                                    )
+                              ],
+                        ),
+                  
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: textField2(
+                              controller: addArticleController.stars,
+                              hint: "Stars",
+                              hight: 8.h,
+                              readOnly: false,
+                              textInputAction: TextInputAction.done),
+                            ),
+                            SizedBox(
+                               width: 2.w,
+                            ),
+                        Expanded(
+                          child: textField2(
+                              controller: addArticleController.tags,
+                              hint: "Tags",
+                              hight: 8.h,
+                              readOnly: false,
+                              textInputAction: TextInputAction.done),
+                        ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        HtmlEditor(
+                          controller: addArticleController.controller,
+                          htmlEditorOptions: const HtmlEditorOptions(
+                            hint: "Write Your Article..",
+                            shouldEnsureVisible: true,
+                            autoAdjustHeight: true,
+                            adjustHeightForKeyboard: true,
+                          ),
+                          htmlToolbarOptions: HtmlToolbarOptions(
+                            toolbarPosition: ToolbarPosition.aboveEditor,
+                            toolbarType: ToolbarType.nativeExpandable,
+                            renderBorder: true,
+                            toolbarItemHeight: 40,
+                            gridViewHorizontalSpacing: 5,
+                            gridViewVerticalSpacing: 5,
+                            buttonBorderWidth: 2,
+                            //initiallyExpanded: true,
+                            defaultToolbarButtons: [
+                              const StyleButtons(),
+                              const FontButtons(),
+                              const FontSettingButtons(),
+                              const ColorButtons(),
+                              const ListButtons(),
+                              const ParagraphButtons(caseConverter: true),
+                              const InsertButtons(),
+                              const OtherButtons(
+                                  copy: true,
+                                  codeview: false,
+                                  undo: false,
+                                  redo: false,
+                                  paste: true),
+                            ],
+                            customToolbarButtons: <Widget>[
+                              OutlinedButton(
+                                onPressed: showdialog,
+                                child: const Icon(
+                                  Icons.coffee,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                            onButtonPressed: (ButtonType type, bool? status,
+                                Function? updateStatus) {
+                              return true;
+                            },
+                            onDropdownChanged: (DropdownType type,
+                                dynamic changed,
+                                Function(dynamic)? updateSelectedItem) {
+                              return true;
+                            },
+                            mediaLinkInsertInterceptor:
+                                (String url, InsertFileType type) {
+                              return true;
+                            },
+                            mediaUploadInterceptor:
+                                (PlatformFile file, InsertFileType type) async {
+                              print(file.name); //filename
+                              print(file.size); //size in bytes
+                              print(file.extension);
+                              return true;
+                            },
+                          ),
+                          // callbacks: Callbacks(onPaste: () {
+                          //   showMsg(context, msg: 'Paste', color: Colors.black26);
+                          //   print("");
+                          // }, onImageUploadError: (FileUpload? file,
+                          //     String? base64Str, UploadError error) {
+                          //   print(describeEnum(error));
+                          //   print(base64Str ?? '');
+                          //   if (file != null) {
+                          //     print(file.name);
+                          //     print(file.size);
+                          //     print(file.type);
+                          //   }
+                          // }),
+                          otherOptions: const OtherOptions(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  border: Border.fromBorderSide(BorderSide(
+                                      color: Colors.black, width: 1.5))),
+                              height: 550),
+                          // plugins: [
+                          //   SummernoteAtMention(
+                          //       getSuggestionsMobile: (String value) {
+                          //         List<String> mentions = [
+                          //           'test1',
+                          //           'test2',
+                          //           'test3'
+                          //         ];
+                          //         return mentions
+                          //             .where((element) => element.contains(value))
+                          //             .toList();
+                          //       },
+                          //       mentionsWeb: ['test1', 'test2', 'test3'],
+                          //       onSelect: (String value) {
+                          //         print(value);
+                          //       }),
+                          // ],
+                        ),
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        // customButton(
+                        //   width: 50.w,
+                        //   height: 6.h,
+                        //   title: "Create Article",
+                        //   textColor: AppColor.whiteColor,
+                        //   onTap: addArticleController.addArticle,
+                        // ),
+                        // SizedBox(
+                        //   height: 3.h,
+                        // ),
+                      ]);
+                },
+              ),
             ),
           ),
+        ),
         ),
       ),
     );

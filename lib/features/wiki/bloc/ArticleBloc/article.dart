@@ -60,6 +60,17 @@ class Article extends GetxController {
   //   update();
   // }
 
+  deleteArticle(int index){
+    articledata.deleteArticle(index: index);
+    update();
+  }
+
+  editArticle(int index,Articlemodel articlemodel){
+    articledata.updateArticle(index: index, articlemodel: articlemodel);
+    Get.to(const HomePage());
+    update();
+    
+  }
   addArticle() async {
     var description = await controller.getText();
     if (description.contains('src=\"data:')) {

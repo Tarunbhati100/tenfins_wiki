@@ -32,31 +32,75 @@ class _ViewArticleMobileState extends State<ViewArticleMobile> {
             },
             child: const Icon(Icons.arrow_back_rounded)),
       ),
-      body: SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-            child: appText(
-                title: widget.articleData.shortdescription,
-                color: AppColor.black,
-                fontSize: 22,
-                fontWeight: FontWeight.w600),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-            child: Html(
-              data: widget.articleData.content,
-              style: {
-                "body": Style(
-                  color: AppColor.black.withOpacity(0.6),
+      body: Container(
+         margin: EdgeInsets.symmetric(horizontal: 5.w,vertical: 3.h),
+            padding: EdgeInsets.all(1.w),
+            decoration: BoxDecoration(
+              color: AppColor.whiteColor,
+              borderRadius: BorderRadius.circular(1.5.w),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColor.grey.withOpacity(0.7),
+                  blurRadius: 15
                 )
-              },
+              ]
+        ),
+        child: SingleChildScrollView(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+           SizedBox(height: 1.h,),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+              child: appText(
+                  title: widget.articleData.shortdescription,
+                  color: AppColor.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600),
             ),
+            Divider(color: AppColor.grey.withOpacity(0.4),endIndent: 4.w,indent: 4.w),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+              child: Html(
+                data: widget.articleData.content,
+                style: {
+                  "body": Style(
+                    color: AppColor.black.withOpacity(0.6),
+                  )
+                },
+              ),
+            ),
+             Container(
+                  margin: EdgeInsets.symmetric(horizontal: 12.w,vertical: 2.h),
+              padding: EdgeInsets.all(5.w),
+              decoration: BoxDecoration(
+                color: AppColor.whiteColor,
+                borderRadius: BorderRadius.circular(3.w),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColor.grey.withOpacity(0.7),
+                    blurRadius: 15
+                  )
+                ]
           ),
-        ],
-      )),
+          child: Center(
+            child: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:  [
+               appText(title: "Author : ${widget.articleData.author}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+               SizedBox(height:1.h),
+              appText(title: "Category : ${widget.articleData.category}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+               SizedBox(height:1.h),
+              appText(title: "Star : ${widget.articleData.stars}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+              SizedBox(height:1.h),
+              appText(title: "Tag : ${widget.articleData.tags}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+                          ]), 
+            )))
+          ],
+        )),
+      ),
     );
   }
 }

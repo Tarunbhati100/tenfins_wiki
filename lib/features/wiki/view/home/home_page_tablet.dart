@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print, sized_box_for_whitespace, prefer_const_constructors, non_constant_identifier_names
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -33,8 +34,8 @@ class _HomePageTabletState extends State<HomePageTablet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.whiteColor,
       appBar: AppBar(
-      
         elevation: 0,
         automaticallyImplyLeading: false,
         title: appText(title: AppSatring.wikilist, color: AppColor.whiteColor),
@@ -44,7 +45,7 @@ class _HomePageTabletState extends State<HomePageTablet> {
             padding: EdgeInsets.only(right: 2.w),
             child: InkWell(
               onTap: () {
-                Get.to(const AddArticlePage());
+                Get.to( AddArticlePage(newArticle: true,oldArticle: false,));
               },
               child: const ImageIcon(
                 AssetImage(AppImage.createnewicon),
@@ -57,136 +58,166 @@ class _HomePageTabletState extends State<HomePageTablet> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
-          //   child: SizedBox(
-          //     height: 7.h,
-          //     child: CupertinoSearchTextField(
-          //       controller: articleController.searchArticle,
-          //       onChanged: (String value) {
-          //         setState(() {
-          //           searchtxt = articleController.searchArticle.text;
-          //         });
-          //         print("searchtxt : $searchtxt");
-          //         // setState(() {
-          //         //   searchList = tempList
-          //         //       .where((element) => element["title"]!
-          //         //           .toLowerCase()
-          //         //           .contains(value.toLowerCase()))
-          //         //       .toList();
-          //         // });
-          //         // print('The text has changed to : $value');
-          //       },
-          //     ),
-          //   ),
-          // ),
+           Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 3.h),
+            child: SizedBox(
+              height: 7.h,
+              child: CupertinoSearchTextField(
+                borderRadius: BorderRadius.circular(3.w),
+                backgroundColor: Colors.grey.withOpacity(0.3),
+                controller: articleController.searchArticle,
+                onChanged: (String value) {
+                  setState(() {
+                    searchtxt = articleController.searchArticle.text;
+                  });
+                },
+              ),
+            ),
+          ),
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: ArticleDataStore.box.listenable(),
               builder: (context, Box box, widget) {
-                var results = searchtxt.isEmpty
+               var results = searchtxt.isEmpty
                     ? box.values.toList() // whole list
                     : box.values
                         .where((c) => c.title.toLowerCase().contains(searchtxt))
                         .toList();
+                print("results : $results");
                 return results.isEmpty
                     ? Center(
                         child:
                             appText(title: "No Article", color: AppColor.grey),
                       )
                     : SingleChildScrollView(
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            reverse: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: box.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              var articleData = box.getAt(index);
-                              //  print("articleData : ${articleData.categor}");
-                              //  print("articleData : ${articleData.toJson()}");
-                              //  print("articleData : ${inspect(articleData.toString())}");
-                              //   print("articleData : ${jsonEncode(articleData)}");
-                              // print("articleData : ${articleData.title}");
-                              // print("articleData : ${articleData.description}");
-                              return InkWell(
-                                onTap: () {
-                                  Get.to(ViewArticlePage(
-                                      articleData: articleData));
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  margin: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: AppColor.grey.withOpacity(0.1),
-                                    border: Border.all(color: AppColor.grey),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            RichText(
-                                              text: TextSpan(
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: articleData.title,
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: AppColor.black,
-                                                          fontWeight:
-                                                              FontWeight.w500)),
-                                                ],
-                                              ),
-                                            ),
-                                            // RichText(
-                                            //   text: TextSpan(
-                                            //     children: <TextSpan>[
-                                            //       TextSpan(
-                                            //           text: articleData
-                                            //               .shortdescription,
-                                            //           style: TextStyle(
-                                            //               fontSize: 16,
-                                            //               color: AppColor.black,
-                                            //               fontWeight:
-                                            //                   FontWeight.w500)),
-                                            //     ],
-                                            //   ),
-                                            // ),
-                                            Row(
+                        child: GetBuilder<Article>(
+                          builder: (controller) {
+                            return  ListView.builder(
+                              shrinkWrap: true,
+                              reverse: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: results.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var articleData = searchtxt.isEmpty
+                                  ? box.getAt(index) // whole list
+                                  : results[index];
+                              print("articleData : $articleData");
+                                //  print("articleData : ${articleData.categor}");
+                                //  print("articleData : ${articleData.toJson()}");
+                                //  print("articleData : ${inspect(articleData.toString())}");
+                                //   print("articleData : ${jsonEncode(articleData)}");
+                                // print("articleData : ${articleData.title}");
+                                // print("articleData : ${articleData.description}");
+                                return InkWell(
+                                  onTap: () {
+                                    Get.to(ViewArticlePage(
+                                        articleData: articleData));
+                                  },
+                                  child: Container(                           
+                                    padding:  EdgeInsets.symmetric(horizontal: 1.5.w,vertical: 2.h),
+                                    margin:  EdgeInsets.symmetric(horizontal:3.w,vertical: 2.h),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.whiteColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColor.grey.withOpacity(0.6),
+                                          blurRadius: 15,
+                                          offset: const Offset(1, 2)
+                                        
+                                        )
+                                      ],
+                                      borderRadius:  BorderRadius.circular(3.w),
+                                        gradient:LinearGradient(
+                                        colors: [
+                                          AppColor.gradient,
+                                          AppColor.whiteColor,
+                                        ],
+                                         // ignore: prefer_const_literals_to_create_immutable
+                                        begin:Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+
+                                       
+                                        ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        appText(
+                                          title: articleData.title,
+                                          fontSize: 3.3.h,
+                                          color: AppColor.black,
+                                          fontWeight: FontWeight.w500
+                                        ),
+                                          SizedBox(height:1.5.h),
+                                          Padding(
+                                            padding:  EdgeInsets.only(left: 0.2.w),
+                                            child: Row(
                                               children: [
                                                 Flexible(
-                                                  child: Html(
-                                                    data: articleData.shortdescription,
-                                                    shrinkWrap: true,
+                                                  child: appText(
+                                                  title: articleData.shortdescription,
+                                                  fontSize: 1.5.h,
+                                                  color: AppColor.black.withOpacity(0.9),
+                                                                                
+                                                  
+                                                  
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                           Row(
+                                              children: [
+                                                Flexible(
+                                                  child: Html(
+                                                    data: articleData.content,
+                                                    shrinkWrap: true,
+                                                     style:{
+                                                      "body":Style(fontSize: FontSize(2.h),
+                                                      color: AppColor.grey,
+                                                      textOverflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      ),}
+
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                         Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          // InkWell(
+                                          //   onTap: () {
+                                          //     Get.to(AddArticlePage(newArticle: false,oldArticle: true,index: index,articlemodel: articleData,));
+                                          //   },
+                                          //   child:  ImageIcon(
+                                          //     const AssetImage(AppImage.editicon),
+                                          //     size: 2.7.h,
+                                          //     color: AppColor.black,
+                                          //   ),
+                                          // ),
+                                          // SizedBox(width: 2.w,),
+                                          InkWell(
+                                            onTap: () {
+                                            articleController.deleteArticle(index);
+                                            },
+                                            child:  ImageIcon(
+                                              const AssetImage(AppImage.deleticon),
+                                              size: 2.7.h,
+                                              color: AppColor.black,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      // Row(
-                                      //   children: [
-                                      //     InkWell(
-                                      //       onTap: () {
-                                      //         Get.to(const AddArticlePage());
-                                      //       },
-                                      //       child: const ImageIcon(
-                                      //         AssetImage(AppImage.editicon),
-                                      //         size: 30,
-                                      //       ),
-                                      //     ),
-                                      //   ],
-                                      // ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            }),
+                                );
+                              });
+                          },
+                        ),
                       );
               },
             ),

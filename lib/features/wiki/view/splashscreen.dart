@@ -1,6 +1,6 @@
 // import 'package:dna/screen/login_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/utils/color.dart';
@@ -19,8 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.push(
-          context, CupertinoPageRoute(builder: (context) => const HomePage()));
+  Get.off(const HomePage());
     });
     super.initState();
   }
@@ -58,8 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      AppImage.coding,
-                      height: 25.h,
+                      AppImage.wikilogo,
+                      height: 20.h,
                     ),
                     SizedBox(
                       height: 2.h,
@@ -68,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       title: AppSatring.appName,
                       fontWeight: FontWeight.w700,
                       color: AppColor.whiteColor,
-                      fontSize: 20,
+                      fontSize: 3.h,
                     )
                   ],
                 ),
