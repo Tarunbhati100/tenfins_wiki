@@ -40,7 +40,6 @@ class Article extends GetxController {
   void onInit() {
     getArticleCategoryList();
     getArticleTypeList();
-    getArticleTypeList();
     super.onInit();
   }
 
@@ -55,23 +54,18 @@ class Article extends GetxController {
     update();
   }
 
-  // getArticle() async {
-  //   getArticleList = await ArticleDB().getArticleData();
-  //   update();
-  // }
-
-  deleteArticle(int index){
+  deleteArticle(int index) {
     articledata.deleteArticle(index: index);
     update();
   }
 
-  editArticle(int index,Articlemodel articlemodel){
+  editArticle(int index, Articlemodel articlemodel) {
     articledata.updateArticle(index: index, articlemodel: articlemodel);
     Get.to(const HomePage());
     update();
-    
   }
-  addArticle() async {
+
+  Future<void> addArticle() async {
     var description = await controller.getText();
     if (description.contains('src=\"data:')) {
       description = '<>';
@@ -108,7 +102,72 @@ class Article extends GetxController {
       selectedCategory;
       description;
       update();
-      Get.to(const HomePage());
     });
+  }
+
+  Future<void> updateArticle(index) async {
+    var description = await controller.getText();
+    if (description.contains('src=\"data:')) {
+      description = '<>';
+    }
+    print("Update");
+    print(selectedCategory);
+
+    final article = Articlemodel()
+      ..id = 1
+      ..title = titleController.text
+      ..shortdescription = shortDescription.text
+      ..category = selectedCategory.toString()
+      ..keywords = keywords.text
+      ..author = author.text
+      ..views = ""
+      ..likes = ""
+      ..mentions = mentions.text
+      ..stars = stars.text
+      ..tags = tags.text
+      ..type = selectedType.toString()
+      ..lastUpdated = ""
+      ..dateTime = ""
+      ..content = description;
+
+    articledata
+        .updateArticle(index: index, articlemodel: article)
+        .then((value) {
+      titleController.clear();
+      shortDescription.clear();
+      keywords.clear();
+      author.clear();
+      mentions.clear();
+      stars.clear();
+      tags.clear();
+      selectedType;
+      selectedCategory;
+      description;
+      update();
+    });
+  }
+
+  setArticleData(articleData) {
+    titleController.text = articleData!.title!;
+    shortDescription.text = articleData!.shortdescription!;
+    selectedCategory = articleData!.category!;
+    keywords.text = articleData!.keywords!;
+    author.text = articleData!.author!;
+    selectedType = articleData!.type!;
+    stars.text = articleData!.stars!;
+    tags.text = articleData!.tags!;
+    //  controller.insertHtml('''<p style="color: blue">Google in blue</p>''');
+  }
+
+  cleanArticleData() {
+    titleController.clear();
+    shortDescription.clear();
+    keywords.clear();
+    author.clear();
+    mentions.clear();
+    stars.clear();
+    tags.clear();
+    selectedType;
+    selectedCategory;
   }
 }

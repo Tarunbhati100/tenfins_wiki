@@ -1,21 +1,23 @@
-// ignore_for_file: must_be_immutable, non_constant_identifier_names, avoid_print, invalid_use_of_protected_member
+// ignore_for_file: must_be_immutable, non_constant_identifier_names, avoid_print, invalid_use_of_protected_member, prefer_const_constructors_in_immutables, unnecessary_null_comparison, prefer_const_constructors
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
+import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
 
 class AddArticleMobile extends StatefulWidget {
-  Articlemodel? articleModel;
-  bool NewMobileArticle;
-  int? mobileIndex;
-  AddArticleMobile({super.key, this.articleModel,required this.NewMobileArticle,this.mobileIndex});
+  final bool? type;
+  final int? index;
+  final Articlemodel? articleData;
+  AddArticleMobile({super.key, this.type, this.index, this.articleData});
 
   @override
   State<AddArticleMobile> createState() => _AddArticleMobileState();
@@ -27,13 +29,15 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      (widget.type!)
+          ? addArticleController.setArticleData(widget.articleData)
+          : addArticleController.cleanArticleData();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.articleModel != null) {
-      addArticleController.titleController.text = widget.articleModel!.title!;
-    }
     return GestureDetector(
       onTap: () {
         if (!kIsWeb) {
@@ -43,39 +47,42 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.primary,
-          title: appText(title:widget.NewMobileArticle == true ? "Create New Article" : "Edit Article"),
+          title: appText(
+              title: (widget.type!) ? "Update Article" : "Create New Article"),
           elevation: 0,
-            actions: [
-              Padding(
-                padding:  EdgeInsets.only(right:1.w),
-                child: TextButton(
-                          onPressed: () {   
-                            widget.NewMobileArticle == true?
-                         addArticleController.addArticle() : 
-                         addArticleController.editArticle(widget.mobileIndex!, widget.articleModel!);    
-                         setState(() {
-                           
-                         });     
-                          }, 
-                          child: appText(title:"Save",color: AppColor.whiteColor,fontSize: 20 )),
-              )],
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 1.w),
+              child: TextButton(
+                  onPressed: () async {
+                    (widget.type!)
+                        ? await addArticleController.updateArticle(widget.index)
+                        : await addArticleController.addArticle();
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomePage()));
+                    });
+                  },
+                  child: appText(
+                      title: (widget.type!) ? "Update" : "Save",
+                      color: AppColor.whiteColor,
+                      fontSize: 20)),
+            )
+          ],
         ),
         body: Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 5.w,vertical: 4.w),
+          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 4.w),
           child: Container(
-              decoration: BoxDecoration(
+            decoration: BoxDecoration(
                 color: AppColor.whiteColor,
                 borderRadius: BorderRadius.circular(3.w),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColor.grey.withOpacity(0.7),
-                    blurRadius: 15
-                  )
-                ]
-              ),
+                      color: AppColor.grey.withOpacity(0.7), blurRadius: 15)
+                ]),
             child: SingleChildScrollView(
               child: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 5.5.w,vertical: 2.h),
+                padding: EdgeInsets.symmetric(horizontal: 5.5.w, vertical: 2.h),
                 child: Obx(
                   () {
                     return Column(
@@ -105,7 +112,8 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                           Container(
                             // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                             decoration: BoxDecoration(
-                              border: Border.all(color: const Color(0xFFACAAA0)),
+                              border:
+                                  Border.all(color: const Color(0xFFACAAA0)),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(7),
                               boxShadow: [
@@ -114,17 +122,20 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                               ],
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: DropdownButton(
                                 isExpanded: true,
                                 underline: Container(),
                                 hint: const Text('Select Category'),
                                 value: addArticleController.selectedCategory,
                                 onChanged: (newValue) {
-                                  setState(() {
-                                    addArticleController.selectedCategory =
-                                        newValue;
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      addArticleController.selectedCategory =
+                                          newValue;
+                                    });
+                                  }
                                 },
                                 items: addArticleController
                                     .articleCategoryList.value
@@ -161,7 +172,8 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                           Container(
                             // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                             decoration: BoxDecoration(
-                              border: Border.all(color: const Color(0xFFACAAA0)),
+                              border:
+                                  Border.all(color: const Color(0xFFACAAA0)),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(7),
                               boxShadow: [
@@ -170,18 +182,23 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                               ],
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: DropdownButton(
                                 isExpanded: true,
                                 underline: Container(),
                                 hint: const Text('Select Type'),
                                 value: addArticleController.selectedType,
                                 onChanged: (newValue) {
-                                  setState(() {
-                                    addArticleController.selectedType = newValue;
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      addArticleController.selectedType =
+                                          newValue;
+                                    });
+                                  }
                                 },
-                                items: addArticleController.articleTypeList.value
+                                items: addArticleController
+                                    .articleTypeList.value
                                     .map((value) {
                                   return DropdownMenuItem(
                                     value: value['title'],
@@ -245,6 +262,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                                     redo: false,
                                     paste: true),
                               ],
+
                               customToolbarButtons: <Widget>[
                                 OutlinedButton(
                                   onPressed: showdialog,
@@ -258,6 +276,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                                   Function? updateStatus) {
                                 return true;
                               },
+
                               onDropdownChanged: (DropdownType type,
                                   dynamic changed,
                                   Function(dynamic)? updateSelectedItem) {
@@ -267,8 +286,9 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                                   (String url, InsertFileType type) {
                                 return true;
                               },
-                              mediaUploadInterceptor:
-                                  (PlatformFile file, InsertFileType type) async {
+
+                              mediaUploadInterceptor: (PlatformFile file,
+                                  InsertFileType type) async {
                                 print(file.name); //filename
                                 print(file.size); //size in bytes
                                 print(file.extension);
@@ -276,7 +296,8 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                               },
                             ),
                             callbacks: Callbacks(onPaste: () {
-                              showMsg(context, msg: 'Paste', color: Colors.black26);
+                              showMsg(context,
+                                  msg: 'Paste', color: Colors.black26);
                               print("");
                             }, onImageUploadError: (FileUpload? file,
                                 String? base64Str, UploadError error) {
@@ -304,7 +325,8 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                                       'test3'
                                     ];
                                     return mentions
-                                        .where((element) => element.contains(value))
+                                        .where((element) =>
+                                            element.contains(value))
                                         .toList();
                                   },
                                   mentionsWeb: ['test1', 'test2', 'test3'],

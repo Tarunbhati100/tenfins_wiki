@@ -89,7 +89,7 @@ class ArticleDataStore {
   }
 
   /// show article list
-  Future<void> getArticle({required String id}) async {
+  getArticle({id}) async {
     await box.get(id);
   }
 

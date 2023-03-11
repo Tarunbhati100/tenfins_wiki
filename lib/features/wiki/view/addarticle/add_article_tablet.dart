@@ -1,7 +1,8 @@
-// ignore_for_file: must_be_immutable, avoid_print, invalid_use_of_protected_member
+// ignore_for_file: must_be_immutable, avoid_print, invalid_use_of_protected_member, prefer_const_constructors_in_immutables
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -9,15 +10,16 @@ import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
+import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
 
 class AddArticleTablet extends StatefulWidget {
-  Articlemodel? articleModel;
-  bool newTabletArticle;
-  int?tabletIndex;
-  AddArticleTablet({super.key, this.articleModel,this.tabletIndex,required this.newTabletArticle});
+  final bool? type;
+  final int? index;
+  final Articlemodel? articleData;
+  AddArticleTablet({super.key, this.type, this.index, this.articleData});
 
   @override
   State<AddArticleTablet> createState() => _AddArticleTabletState();
@@ -25,11 +27,19 @@ class AddArticleTablet extends StatefulWidget {
 
 class _AddArticleTabletState extends State<AddArticleTablet> {
   Article addArticleController = Get.put(Article());
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      (widget.type!)
+          ? addArticleController.setArticleData(widget.articleData)
+          : addArticleController.cleanArticleData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.articleModel != null) {
-      addArticleController.titleController.text = widget.articleModel!.title!;
-    }
     return GestureDetector(
       onTap: () {
         if (!kIsWeb) {
@@ -39,315 +49,336 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.primary,
-          title: appText(title:widget.newTabletArticle == true ? "Create New Article" : "Edit Article"),
+          title: appText(
+              title: (widget.type!) ? "Update Article" : "Create New Article"),
           elevation: 0,
-            actions: [
-              Padding(
-                padding:  EdgeInsets.only(right:1.w),
-                child: TextButton(
-                          onPressed: () {   
-                addArticleController.addArticle();           
-                          }, 
-                          child: appText(title:"Save",color: AppColor.whiteColor,fontSize: 20 )),
-              )],
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 1.w),
+              child: TextButton(
+                  onPressed: () async {
+                    (widget.type!)
+                        ? await addArticleController.updateArticle(widget.index)
+                        : await addArticleController.addArticle();
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()));
+                    });
+                  },
+                  child: appText(
+                      title: (widget.type!) ? "Update" : "Save",
+                      color: AppColor.whiteColor,
+                      fontSize: 20)),
+            )
+          ],
         ),
         body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal:6.w,vertical: 3.h),
-        child: Container(
-          padding: EdgeInsets.all(1.w),
-          decoration: BoxDecoration(
-            color: AppColor.whiteColor,
-            borderRadius: BorderRadius.circular(1.5.w),
-            boxShadow: [
-              BoxShadow(
-                color: AppColor.grey.withOpacity(0.7),
-                blurRadius: 15
-              )
-            ]
-          ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 1.w),
-              child: Obx(
-                () {
-                  return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        textField2(
-                            controller: addArticleController.titleController,
-                            hint: "Enter Title",
-                            hight: 8.h,
-                            readOnly: false,
-                            textInputAction: TextInputAction.done),
-                        SizedBox(
-                          height: 3.h,
-                        ),
-                        
-                        textField2(
-                            controller: addArticleController.shortDescription,
-                            hint: "Short Description",
-                            hight: 8.h,
-                            readOnly: false,
-                            textInputAction: TextInputAction.done),
-                       SizedBox(height: 3.h,),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: const Color(0xFFACAAA0)),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(7),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.blueGrey[50]!, blurRadius: 1)
-                                  ],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  child: DropdownButton(
-                                    isExpanded: true,
-                                    underline: Container(),
-                                    hint: const Text('Select Category'),
-                                    value: addArticleController.selectedCategory,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        addArticleController.selectedCategory =
-                                            newValue;
-                                      });
-                                    },
-                                    items: addArticleController
-                                        .articleCategoryList.value
-                                        .map((category) {
-                                      return DropdownMenuItem(
-                                        value: category['categoryname'],
-                                        child: Text("${category['categoryname']}"),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                             SizedBox(
-                               width: 2.w,
-                            ),
-                            Expanded(
-                              child: Container(                                                         // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                              border: Border.all(color: const Color(0xFFACAAA0)),
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(7),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.blueGrey[50]!, blurRadius: 1)
-                              ],
-                            ),
-                                 child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: DropdownButton(
-                                isExpanded: true,
-                                underline: Container(),
-                                hint: const Text('Select Type'),
-                                value: addArticleController.selectedType,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    addArticleController.selectedType = newValue;
-                                  });
-                                },
-                                items: addArticleController.articleTypeList.value
-                                    .map((value) {
-                                  return DropdownMenuItem(
-                                    value: value['title'],
-                                    child: Text("${value['title']}"),
-                                  );
-                                }).toList(),
-                              ),
-                                ),
-                             ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 3.h,
-                        ),
-                        Row(
-                          children: 
-                                [
-                                  Expanded(
-                                    child:
-                                     textField2(
-                                        controller: addArticleController.keywords,
-                                         hint: "Keywords",
-                                         hight: 8.h,
-                                         readOnly: false,
-                                         textInputAction: TextInputAction.done),
-                                  ),
-                                 SizedBox(
-                               width: 2.w,
-                            ),
-                                  Expanded(
-                                    child:  textField2(
-                                      controller: addArticleController.author,
-                                       hint: "Author",
-                                       hight: 8.h,
-                                       readOnly: false,
-                                      textInputAction: TextInputAction.done),
-                                    )
-                              ],
-                        ),
-                  
-                        SizedBox(
-                          height: 3.h,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: textField2(
-                              controller: addArticleController.stars,
-                              hint: "Stars",
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+          child: Container(
+            padding: EdgeInsets.all(1.w),
+            decoration: BoxDecoration(
+                color: AppColor.whiteColor,
+                borderRadius: BorderRadius.circular(1.5.w),
+                boxShadow: [
+                  BoxShadow(
+                      color: AppColor.grey.withOpacity(0.7), blurRadius: 15)
+                ]),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 1.w),
+                child: Obx(
+                  () {
+                    return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 1.h,
+                          ),
+                          textField2(
+                              controller: addArticleController.titleController,
+                              hint: "Enter Title",
                               hight: 8.h,
                               readOnly: false,
                               textInputAction: TextInputAction.done),
-                            ),
-                            SizedBox(
-                               width: 2.w,
-                            ),
-                        Expanded(
-                          child: textField2(
-                              controller: addArticleController.tags,
-                              hint: "Tags",
+                          SizedBox(
+                            height: 3.h,
+                          ),
+
+                          textField2(
+                              controller: addArticleController.shortDescription,
+                              hint: "Short Description",
                               hight: 8.h,
                               readOnly: false,
                               textInputAction: TextInputAction.done),
-                        ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 3.h,
-                        ),
-                        HtmlEditor(
-                          controller: addArticleController.controller,
-                          htmlEditorOptions: const HtmlEditorOptions(
-                            hint: "Write Your Article..",
-                            shouldEnsureVisible: true,
-                            autoAdjustHeight: true,
-                            adjustHeightForKeyboard: true,
+                          SizedBox(
+                            height: 3.h,
                           ),
-                          htmlToolbarOptions: HtmlToolbarOptions(
-                            toolbarPosition: ToolbarPosition.aboveEditor,
-                            toolbarType: ToolbarType.nativeExpandable,
-                            renderBorder: true,
-                            toolbarItemHeight: 40,
-                            gridViewHorizontalSpacing: 5,
-                            gridViewVerticalSpacing: 5,
-                            buttonBorderWidth: 2,
-                            //initiallyExpanded: true,
-                            defaultToolbarButtons: [
-                              const StyleButtons(),
-                              const FontButtons(),
-                              const FontSettingButtons(),
-                              const ColorButtons(),
-                              const ListButtons(),
-                              const ParagraphButtons(caseConverter: true),
-                              const InsertButtons(),
-                              const OtherButtons(
-                                  copy: true,
-                                  codeview: false,
-                                  undo: false,
-                                  redo: false,
-                                  paste: true),
-                            ],
-                            customToolbarButtons: <Widget>[
-                              OutlinedButton(
-                                onPressed: showdialog,
-                                child: const Icon(
-                                  Icons.coffee,
-                                  color: Colors.black,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: const Color(0xFFACAAA0)),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(7),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.blueGrey[50]!,
+                                          blurRadius: 1)
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: DropdownButton(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      hint: const Text('Select Category'),
+                                      value:
+                                          addArticleController.selectedCategory,
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          addArticleController
+                                              .selectedCategory = newValue;
+                                        });
+                                      },
+                                      items: addArticleController
+                                          .articleCategoryList.value
+                                          .map((category) {
+                                        return DropdownMenuItem(
+                                          value: category['categoryname'],
+                                          child: Text(
+                                              "${category['categoryname']}"),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: const Color(0xFFACAAA0)),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(7),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.blueGrey[50]!,
+                                          blurRadius: 1)
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: DropdownButton(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      hint: const Text('Select Type'),
+                                      value: addArticleController.selectedType,
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          addArticleController.selectedType =
+                                              newValue;
+                                        });
+                                      },
+                                      items: addArticleController
+                                          .articleTypeList.value
+                                          .map((value) {
+                                        return DropdownMenuItem(
+                                          value: value['title'],
+                                          child: Text("${value['title']}"),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
-                            onButtonPressed: (ButtonType type, bool? status,
-                                Function? updateStatus) {
-                              return true;
-                            },
-                            onDropdownChanged: (DropdownType type,
-                                dynamic changed,
-                                Function(dynamic)? updateSelectedItem) {
-                              return true;
-                            },
-                            mediaLinkInsertInterceptor:
-                                (String url, InsertFileType type) {
-                              return true;
-                            },
-                            mediaUploadInterceptor:
-                                (PlatformFile file, InsertFileType type) async {
-                              print(file.name); //filename
-                              print(file.size); //size in bytes
-                              print(file.extension);
-                              return true;
-                            },
                           ),
-                          // callbacks: Callbacks(onPaste: () {
-                          //   showMsg(context, msg: 'Paste', color: Colors.black26);
-                          //   print("");
-                          // }, onImageUploadError: (FileUpload? file,
-                          //     String? base64Str, UploadError error) {
-                          //   print(describeEnum(error));
-                          //   print(base64Str ?? '');
-                          //   if (file != null) {
-                          //     print(file.name);
-                          //     print(file.size);
-                          //     print(file.type);
-                          //   }
-                          // }),
-                          otherOptions: const OtherOptions(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
-                                  border: Border.fromBorderSide(BorderSide(
-                                      color: Colors.black, width: 1.5))),
-                              height: 550),
-                          // plugins: [
-                          //   SummernoteAtMention(
-                          //       getSuggestionsMobile: (String value) {
-                          //         List<String> mentions = [
-                          //           'test1',
-                          //           'test2',
-                          //           'test3'
-                          //         ];
-                          //         return mentions
-                          //             .where((element) => element.contains(value))
-                          //             .toList();
-                          //       },
-                          //       mentionsWeb: ['test1', 'test2', 'test3'],
-                          //       onSelect: (String value) {
-                          //         print(value);
-                          //       }),
-                          // ],
-                        ),
-                        SizedBox(
-                          height: 3.h,
-                        ),
-                        // customButton(
-                        //   width: 50.w,
-                        //   height: 6.h,
-                        //   title: "Create Article",
-                        //   textColor: AppColor.whiteColor,
-                        //   onTap: addArticleController.addArticle,
-                        // ),
-                        // SizedBox(
-                        //   height: 3.h,
-                        // ),
-                      ]);
-                },
+                          SizedBox(
+                            height: 3.h,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: textField2(
+                                    controller: addArticleController.keywords,
+                                    hint: "Keywords",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
+                              ),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Expanded(
+                                child: textField2(
+                                    controller: addArticleController.author,
+                                    hint: "Author",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
+                              )
+                            ],
+                          ),
+
+                          SizedBox(
+                            height: 3.h,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: textField2(
+                                    controller: addArticleController.stars,
+                                    hint: "Stars",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
+                              ),
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Expanded(
+                                child: textField2(
+                                    controller: addArticleController.tags,
+                                    hint: "Tags",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 3.h,
+                          ),
+                          HtmlEditor(
+                            controller: addArticleController.controller,
+                            htmlEditorOptions: const HtmlEditorOptions(
+                              hint: "Write Your Article..",
+                              shouldEnsureVisible: true,
+                              autoAdjustHeight: true,
+                              adjustHeightForKeyboard: true,
+                            ),
+                            htmlToolbarOptions: HtmlToolbarOptions(
+                              toolbarPosition: ToolbarPosition.aboveEditor,
+                              toolbarType: ToolbarType.nativeExpandable,
+                              renderBorder: true,
+                              toolbarItemHeight: 40,
+                              gridViewHorizontalSpacing: 5,
+                              gridViewVerticalSpacing: 5,
+                              buttonBorderWidth: 2,
+                              //initiallyExpanded: true,
+                              defaultToolbarButtons: [
+                                const StyleButtons(),
+                                const FontButtons(),
+                                const FontSettingButtons(),
+                                const ColorButtons(),
+                                const ListButtons(),
+                                const ParagraphButtons(caseConverter: true),
+                                const InsertButtons(),
+                                const OtherButtons(
+                                    copy: true,
+                                    codeview: false,
+                                    undo: false,
+                                    redo: false,
+                                    paste: true),
+                              ],
+                              customToolbarButtons: <Widget>[
+                                OutlinedButton(
+                                  onPressed: showdialog,
+                                  child: const Icon(
+                                    Icons.coffee,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                              onButtonPressed: (ButtonType type, bool? status,
+                                  Function? updateStatus) {
+                                return true;
+                              },
+                              onDropdownChanged: (DropdownType type,
+                                  dynamic changed,
+                                  Function(dynamic)? updateSelectedItem) {
+                                return true;
+                              },
+                              mediaLinkInsertInterceptor:
+                                  (String url, InsertFileType type) {
+                                return true;
+                              },
+                              mediaUploadInterceptor: (PlatformFile file,
+                                  InsertFileType type) async {
+                                print(file.name); //filename
+                                print(file.size); //size in bytes
+                                print(file.extension);
+                                return true;
+                              },
+                            ),
+                            // callbacks: Callbacks(onPaste: () {
+                            //   showMsg(context, msg: 'Paste', color: Colors.black26);
+                            //   print("");
+                            // }, onImageUploadError: (FileUpload? file,
+                            //     String? base64Str, UploadError error) {
+                            //   print(describeEnum(error));
+                            //   print(base64Str ?? '');
+                            //   if (file != null) {
+                            //     print(file.name);
+                            //     print(file.size);
+                            //     print(file.type);
+                            //   }
+                            // }),
+                            otherOptions: const OtherOptions(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5)),
+                                    border: Border.fromBorderSide(BorderSide(
+                                        color: Colors.black, width: 1.5))),
+                                height: 550),
+                            // plugins: [
+                            //   SummernoteAtMention(
+                            //       getSuggestionsMobile: (String value) {
+                            //         List<String> mentions = [
+                            //           'test1',
+                            //           'test2',
+                            //           'test3'
+                            //         ];
+                            //         return mentions
+                            //             .where((element) => element.contains(value))
+                            //             .toList();
+                            //       },
+                            //       mentionsWeb: ['test1', 'test2', 'test3'],
+                            //       onSelect: (String value) {
+                            //         print(value);
+                            //       }),
+                            // ],
+                          ),
+                          SizedBox(
+                            height: 3.h,
+                          ),
+                          // customButton(
+                          //   width: 50.w,
+                          //   height: 6.h,
+                          //   title: "Create Article",
+                          //   textColor: AppColor.whiteColor,
+                          //   onTap: addArticleController.addArticle,
+                          // ),
+                          // SizedBox(
+                          //   height: 3.h,
+                          // ),
+                        ]);
+                  },
+                ),
               ),
             ),
           ),
-        ),
         ),
       ),
     );

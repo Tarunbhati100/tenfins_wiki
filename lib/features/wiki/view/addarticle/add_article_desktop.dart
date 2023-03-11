@@ -1,21 +1,23 @@
-// ignore_for_file: must_be_immutable, avoid_print, invalid_use_of_protected_member, non_constant_identifier_names
+// ignore_for_file: must_be_immutable, avoid_print, invalid_use_of_protected_member, non_constant_identifier_names, prefer_const_constructors_in_immutables
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
+import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
 
 class AddArticleDesktop extends StatefulWidget {
-  Articlemodel? articleModel;
-  bool NewDesktopArticle;
-  int? DesktopIndex;
-  AddArticleDesktop({super.key, this.articleModel,this.DesktopIndex,required this.NewDesktopArticle});
+  final bool? type;
+  final int? index;
+  final Articlemodel? articleData;
+  AddArticleDesktop({super.key, this.type, this.index, this.articleData});
 
   @override
   State<AddArticleDesktop> createState() => _AddArticleDesktopState();
@@ -23,11 +25,19 @@ class AddArticleDesktop extends StatefulWidget {
 
 class _AddArticleDesktopState extends State<AddArticleDesktop> {
   Article addArticleController = Get.put(Article());
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      (widget.type!)
+          ? addArticleController.setArticleData(widget.articleData)
+          : addArticleController.cleanArticleData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.articleModel != null) {
-      addArticleController.titleController.text = widget.articleModel!.title!;
-    }
     return GestureDetector(
       onTap: () {
         if (!kIsWeb) {
@@ -37,35 +47,45 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.primary,
-          title: appText(title:widget.NewDesktopArticle == true ? "Create New Article" : "Edit Article"),
+          title: appText(
+              title: (widget.type!) ? "Update Article" : "Create New Article"),
           elevation: 0,
           actions: [
             Padding(
-              padding:  EdgeInsets.only(right:1.w),
+              padding: EdgeInsets.only(right: 1.w),
               child: TextButton(
-              onPressed: () {   
-                addArticleController.addArticle();           
-              }, 
-              child: appText(title:"Save",color: AppColor.whiteColor,fontSize: 20 )),
-            )],
+                  onPressed: () async {
+                    (widget.type!)
+                        ? await addArticleController.updateArticle(widget.index)
+                        : await addArticleController.addArticle();
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()));
+                    });
+                  },
+                  child: appText(
+                      title: (widget.type!) ? "Update" : "Save",
+                      color: AppColor.whiteColor,
+                      fontSize: 20)),
+            )
+          ],
         ),
         body: Padding(
-          padding:  EdgeInsets.symmetric(horizontal:10.w,vertical: 3.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
           child: Container(
             padding: EdgeInsets.all(1.w),
             decoration: BoxDecoration(
-              color: AppColor.whiteColor,
-              borderRadius: BorderRadius.circular(1.5.w),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColor.grey.withOpacity(0.7),
-                  blurRadius: 15
-                )
-              ]
-            ),
+                color: AppColor.whiteColor,
+                borderRadius: BorderRadius.circular(1.5.w),
+                boxShadow: [
+                  BoxShadow(
+                      color: AppColor.grey.withOpacity(0.7), blurRadius: 15)
+                ]),
             child: SingleChildScrollView(
               child: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 1.w),
+                padding: EdgeInsets.symmetric(horizontal: 1.w),
                 child: Obx(
                   () {
                     return Column(
@@ -83,39 +103,45 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                           SizedBox(
                             height: 3.h,
                           ),
-                          
+
                           textField2(
                               controller: addArticleController.shortDescription,
                               hint: "Short Description",
                               hight: 8.h,
                               readOnly: false,
                               textInputAction: TextInputAction.done),
-                         SizedBox(height: 3.h,),
+                          SizedBox(
+                            height: 3.h,
+                          ),
                           Row(
                             children: [
                               Expanded(
                                 child: Container(
                                   // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: const Color(0xFFACAAA0)),
+                                    border: Border.all(
+                                        color: const Color(0xFFACAAA0)),
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(7),
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Colors.blueGrey[50]!, blurRadius: 1)
+                                          color: Colors.blueGrey[50]!,
+                                          blurRadius: 1)
                                     ],
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
                                     child: DropdownButton(
                                       isExpanded: true,
                                       underline: Container(),
                                       hint: const Text('Select Category'),
-                                      value: addArticleController.selectedCategory,
+                                      value:
+                                          addArticleController.selectedCategory,
                                       onChanged: (newValue) {
                                         setState(() {
-                                          addArticleController.selectedCategory =
-                                              newValue;
+                                          addArticleController
+                                              .selectedCategory = newValue;
                                         });
                                       },
                                       items: addArticleController
@@ -123,49 +149,56 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                                           .map((category) {
                                         return DropdownMenuItem(
                                           value: category['categoryname'],
-                                          child: Text("${category['categoryname']}"),
+                                          child: Text(
+                                              "${category['categoryname']}"),
                                         );
                                       }).toList(),
                                     ),
                                   ),
                                 ),
                               ),
-                               SizedBox(
-                                 width: 2.w,
+                              SizedBox(
+                                width: 2.w,
                               ),
                               Expanded(
-                                child: Container(                                                         // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                child: Container(
+                                  // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                   decoration: BoxDecoration(
-                                border: Border.all(color: const Color(0xFFACAAA0)),
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(7),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.blueGrey[50]!, blurRadius: 1)
-                                ],
-                              ),
-                                   child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                child: DropdownButton(
-                                  isExpanded: true,
-                                  underline: Container(),
-                                  hint: const Text('Select Type'),
-                                  value: addArticleController.selectedType,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      addArticleController.selectedType = newValue;
-                                    });
-                                  },
-                                  items: addArticleController.articleTypeList.value
-                                      .map((value) {
-                                    return DropdownMenuItem(
-                                      value: value['title'],
-                                      child: Text("${value['title']}"),
-                                    );
-                                  }).toList(),
-                                ),
+                                    border: Border.all(
+                                        color: const Color(0xFFACAAA0)),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(7),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.blueGrey[50]!,
+                                          blurRadius: 1)
+                                    ],
                                   ),
-                               ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: DropdownButton(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      hint: const Text('Select Type'),
+                                      value: addArticleController.selectedType,
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          addArticleController.selectedType =
+                                              newValue;
+                                        });
+                                      },
+                                      items: addArticleController
+                                          .articleTypeList.value
+                                          .map((value) {
+                                        return DropdownMenuItem(
+                                          value: value['title'],
+                                          child: Text("${value['title']}"),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -173,31 +206,29 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                             height: 3.h,
                           ),
                           Row(
-                            children: 
-                                  [
-                                    Expanded(
-                                      child:
-                                       textField2(
-                                          controller: addArticleController.keywords,
-                                           hint: "Keywords",
-                                           hight: 8.h,
-                                           readOnly: false,
-                                           textInputAction: TextInputAction.done),
-                                    ),
-                                   SizedBox(
-                                 width: 2.w,
+                            children: [
+                              Expanded(
+                                child: textField2(
+                                    controller: addArticleController.keywords,
+                                    hint: "Keywords",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
                               ),
-                                    Expanded(
-                                      child:  textField2(
-                                        controller: addArticleController.author,
-                                         hint: "Author",
-                                         hight: 8.h,
-                                         readOnly: false,
-                                        textInputAction: TextInputAction.done),
-                                      )
-                                ],
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Expanded(
+                                child: textField2(
+                                    controller: addArticleController.author,
+                                    hint: "Author",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
+                              )
+                            ],
                           ),
-                    
+
                           SizedBox(
                             height: 3.h,
                           ),
@@ -205,23 +236,23 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                             children: [
                               Expanded(
                                 child: textField2(
-                                controller: addArticleController.stars,
-                                hint: "Stars",
-                                hight: 8.h,
-                                readOnly: false,
-                                textInputAction: TextInputAction.done),
+                                    controller: addArticleController.stars,
+                                    hint: "Stars",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
                               ),
                               SizedBox(
-                                 width: 2.w,
+                                width: 2.w,
                               ),
-                          Expanded(
-                            child: textField2(
-                                controller: addArticleController.tags,
-                                hint: "Tags",
-                                hight: 8.h,
-                                readOnly: false,
-                                textInputAction: TextInputAction.done),
-                          ),
+                              Expanded(
+                                child: textField2(
+                                    controller: addArticleController.tags,
+                                    hint: "Tags",
+                                    hight: 8.h,
+                                    readOnly: false,
+                                    textInputAction: TextInputAction.done),
+                              ),
                             ],
                           ),
                           SizedBox(
@@ -281,8 +312,8 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                                   (String url, InsertFileType type) {
                                 return true;
                               },
-                              mediaUploadInterceptor:
-                                  (PlatformFile file, InsertFileType type) async {
+                              mediaUploadInterceptor: (PlatformFile file,
+                                  InsertFileType type) async {
                                 print(file.name); //filename
                                 print(file.size); //size in bytes
                                 print(file.extension);
