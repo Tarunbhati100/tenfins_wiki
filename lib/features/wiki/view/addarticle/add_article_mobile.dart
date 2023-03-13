@@ -1,5 +1,4 @@
 // ignore_for_file: must_be_immutable, non_constant_identifier_names, avoid_print, invalid_use_of_protected_member, prefer_const_constructors_in_immutables, unnecessary_null_comparison, prefer_const_constructors
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -8,7 +7,6 @@ import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
-import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
@@ -59,8 +57,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                         ? await addArticleController.updateArticle(widget.index)
                         : await addArticleController.addArticle();
                     SchedulerBinding.instance.addPostFrameCallback((_) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
+                     Get.back();
                     });
                   },
                   child: appText(
@@ -229,9 +226,11 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                           SizedBox(
                             height: 3.h,
                           ),
-                          HtmlEditor(
+                          HtmlEditor( 
+
                             controller: addArticleController.controller,
-                            htmlEditorOptions: const HtmlEditorOptions(
+                            htmlEditorOptions: const HtmlEditorOptions(                             
+                              
                               hint: "Write Your Article..",
                               shouldEnsureVisible: true,
                               autoAdjustHeight: true,
@@ -240,9 +239,9 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                             htmlToolbarOptions: HtmlToolbarOptions(
                               buttonSelectedColor: AppColor.primary,
                               toolbarPosition: ToolbarPosition.aboveEditor,
-                              toolbarType: ToolbarType.nativeExpandable,
+                              toolbarType: ToolbarType.nativeScrollable,
                               renderBorder: true,
-                              toolbarItemHeight: 40,
+                              // toolbarItemHeight: 50,
                               gridViewHorizontalSpacing: 5,
                               gridViewVerticalSpacing: 5,
                               buttonBorderWidth: 2,
@@ -289,6 +288,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
 
                               mediaUploadInterceptor: (PlatformFile file,
                                   InsertFileType type) async {
+                                    
                                 print(file.name); //filename
                                 print(file.size); //size in bytes
                                 print(file.extension);
@@ -299,8 +299,12 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                               showMsg(context,
                                   msg: 'Paste', color: Colors.black26);
                               print("");
+                            }, onInit: () {
+                              print("on init");
+                              addArticleController.controller
+                                  .insertHtml(widget.articleData!.content!);
                             }, onImageUploadError: (FileUpload? file,
-                                String? base64Str, UploadError error) {
+                                String? base64Str, UploadError error,) {
                               print(describeEnum(error));
                               print(base64Str ?? '');
                               if (file != null) {

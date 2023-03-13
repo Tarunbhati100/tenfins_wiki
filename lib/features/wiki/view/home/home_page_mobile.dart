@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:sizer/sizer.dart';
@@ -120,8 +119,8 @@ class _HomePageMobileState extends State<HomePageMobile> {
                                         color: AppColor.whiteColor,
                                         gradient: LinearGradient(
                                           colors: [
-                                            AppColor.gradient,
-                                            AppColor.whiteColor,
+                                            AppColor.primary,
+                                            AppColor.black,
                                           ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
@@ -142,8 +141,8 @@ class _HomePageMobileState extends State<HomePageMobile> {
                                         children: [
                                           appText(
                                               title: articleData.title,
-                                              fontSize: 3.3.h,
-                                              color: AppColor.black,
+                                              fontSize: 2.5.h,
+                                              color: AppColor.whiteColor,
                                               fontWeight: FontWeight.w500),
                                           SizedBox(height: 1.5.h),
                                           Padding(
@@ -151,31 +150,13 @@ class _HomePageMobileState extends State<HomePageMobile> {
                                             child: appText(
                                               title:
                                                   articleData.shortdescription,
-                                              fontSize: 1.5.h,
-                                              color: AppColor.black
-                                                  .withOpacity(0.9),
+                                              fontSize:2.h,
+                                              color: AppColor.whiteColor
+                                                  .withOpacity(0.7),
                                               maxLines: 2,
                                             ),
                                           ),
-                                          Row(
-                                            children: [
-                                              Flexible(
-                                                child: Html(
-                                                    data: articleData.content,
-                                                    shrinkWrap: true,
-                                                    style: {
-                                                      "body": Style(
-                                                        fontSize: FontSize(2.h),
-                                                        color: AppColor.grey,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                        maxLines: 1,
-                                                      ),
-                                                    }),
-                                              ),
-                                            ],
-                                          ),
+                                           SizedBox(height: 1.5.h),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
@@ -192,7 +173,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
                                                   const AssetImage(
                                                       AppImage.editicon),
                                                   size: 2.7.h,
-                                                  color: AppColor.black,
+                                                  color: AppColor.whiteColor,
                                                 ),
                                               ),
                                               SizedBox(
@@ -207,7 +188,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
                                                   const AssetImage(
                                                       AppImage.deleticon),
                                                   size: 2.7.h,
-                                                  color: AppColor.black,
+                                                  color: AppColor.whiteColor,
                                                 ),
                                               ),
                                             ],

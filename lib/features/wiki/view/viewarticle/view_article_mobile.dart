@@ -50,13 +50,17 @@ class _ViewArticleMobileState extends State<ViewArticleMobile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
            SizedBox(height: 1.h,),
-            Padding(
+             Padding(
               padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-              child: appText(
-                  title: widget.articleData.shortdescription,
-                  color: AppColor.black,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600),
+              child: Html(
+                  data: widget.articleData.shortdescription,
+                  style: {
+               "body": Style(
+                color: AppColor.primary,
+                fontSize: FontSize(2.h)
+              )
+            },
+                  ),
             ),
             Divider(color: AppColor.grey.withOpacity(0.4),endIndent: 4.w,indent: 4.w),
             Padding(
@@ -65,7 +69,8 @@ class _ViewArticleMobileState extends State<ViewArticleMobile> {
                 data: widget.articleData.content,
                 style: {
                   "body": Style(
-                    color: AppColor.black.withOpacity(0.6),
+                    color: AppColor.black,
+                    fontSize: FontSize(2.h)
                   )
                 },
               ),
@@ -76,6 +81,14 @@ class _ViewArticleMobileState extends State<ViewArticleMobile> {
               decoration: BoxDecoration(
                 color: AppColor.whiteColor,
                 borderRadius: BorderRadius.circular(3.w),
+                 gradient: LinearGradient(
+                       colors: [
+                               AppColor.primary,
+                               AppColor.black,
+                              ],
+                          begin: Alignment.topLeft,
+                         end: Alignment.bottomRight,
+                     ),
                 boxShadow: [
                   BoxShadow(
                     color: AppColor.grey.withOpacity(0.7),
@@ -89,14 +102,14 @@ class _ViewArticleMobileState extends State<ViewArticleMobile> {
                   mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children:  [
-               appText(title: "Author : ${widget.articleData.author}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+               appText(title: "Author : ${widget.articleData.author}",color: AppColor.whiteColor,fontWeight: FontWeight.w600,fontSize: 1.7.h),
                SizedBox(height:1.h),
-              appText(title: "Category : ${widget.articleData.category}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+              appText(title: "Category : ${widget.articleData.category}",color: AppColor.whiteColor,fontWeight: FontWeight.w600,fontSize: 1.7.h),
                SizedBox(height:1.h),
-              appText(title: "Star : ${widget.articleData.stars}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+              appText(title: "Star : ${widget.articleData.stars}",color: AppColor.whiteColor,fontWeight: FontWeight.w600,fontSize: 1.7.h),
               SizedBox(height:1.h),
-              appText(title: "Tag : ${widget.articleData.tags}",color: AppColor.primary,fontWeight: FontWeight.w600,fontSize: 1.7.h),
-                          ]), 
+              appText(title: "Tag : ${widget.articleData.tags}",color: AppColor.whiteColor,fontWeight: FontWeight.w600,fontSize: 1.7.h),
+                       ]), 
             )))
           ],
         )),

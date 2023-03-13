@@ -2,6 +2,13 @@
 
 // ignore_for_file: file_names
 
-abstract class SplashEvent {}
+import 'package:equatable/equatable.dart';
 
-class NavigateToHomeScreenEvent extends SplashEvent {}
+abstract class SplashEvent extends Equatable {
+  const SplashEvent();
+}
+
+class NavigateToHomeScreenEvent extends SplashEvent {
+  @override
+  List<Object?> get props => [];
+}

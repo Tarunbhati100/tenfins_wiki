@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -12,7 +11,6 @@ import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
 import 'package:tenfins_wiki/features/wiki/view/addarticle/add_article.dart';
 import 'package:tenfins_wiki/features/wiki/view/viewarticle/view_article_page.dart';
-
 import 'package:tenfins_wiki/services/article_db.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/utils/imageurl.dart';
@@ -137,10 +135,10 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                                         ],
                                         borderRadius:
                                             BorderRadius.circular(1.w),
-                                        gradient: LinearGradient(
+                                       gradient: LinearGradient(
                                           colors: [
-                                            AppColor.gradient,
-                                            AppColor.whiteColor,
+                                            AppColor.primary,
+                                            AppColor.black,
                                           ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
@@ -153,7 +151,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                                           appText(
                                               title: articleData.title,
                                               fontSize: 3.3.h,
-                                              color: AppColor.black,
+                                              color: AppColor.whiteColor,
                                               fontWeight: FontWeight.w500),
                                           SizedBox(height: 1.5.h),
                                           Padding(
@@ -165,33 +163,15 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                                                   child: appText(
                                                     title: articleData
                                                         .shortdescription,
-                                                    fontSize: 1.5.h,
-                                                    color: AppColor.black
-                                                        .withOpacity(0.9),
+                                                    fontSize: 2.h,
+                                                    color: AppColor.whiteColor
+                                                        .withOpacity(0.7),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          Row(
-                                            children: [
-                                              Flexible(
-                                                child: Html(
-                                                    data: articleData.content,
-                                                    shrinkWrap: true,
-                                                    style: {
-                                                      "body": Style(
-                                                        fontSize: FontSize(2.h),
-                                                        color: AppColor.grey,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                        maxLines: 1,
-                                                      ),
-                                                    }),
-                                              ),
-                                            ],
-                                          ),
+                                           SizedBox(height: 1.5.h),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
@@ -208,7 +188,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                                                   const AssetImage(
                                                       AppImage.editicon),
                                                   size: 2.7.h,
-                                                  color: AppColor.black,
+                                                  color: AppColor.whiteColor,
                                                 ),
                                               ),
                                               SizedBox(
@@ -223,7 +203,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                                                   const AssetImage(
                                                       AppImage.deleticon),
                                                   size: 2.7.h,
-                                                  color: AppColor.black,
+                                                  color: AppColor.whiteColor,
                                                 ),
                                               ),
                                             ],

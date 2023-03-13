@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print, sized_box_for_whitespace, prefer_const_constructors, non_constant_identifier_names
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sizer/sizer.dart';
@@ -131,12 +130,11 @@ class _HomePageTabletState extends State<HomePageTablet> {
                                         ],
                                         borderRadius:
                                             BorderRadius.circular(3.w),
-                                        gradient: LinearGradient(
+                                      gradient: LinearGradient(
                                           colors: [
-                                            AppColor.gradient,
-                                            AppColor.whiteColor,
+                                            AppColor.primary,
+                                            AppColor.black,
                                           ],
-                                          // ignore: prefer_const_literals_to_create_immutable
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                         ),
@@ -147,8 +145,8 @@ class _HomePageTabletState extends State<HomePageTablet> {
                                         children: [
                                           appText(
                                               title: articleData.title,
-                                              fontSize: 3.3.h,
-                                              color: AppColor.black,
+                                              fontSize: 2.5.h,
+                                              color: AppColor.whiteColor,
                                               fontWeight: FontWeight.w500),
                                           SizedBox(height: 1.5.h),
                                           Padding(
@@ -160,33 +158,15 @@ class _HomePageTabletState extends State<HomePageTablet> {
                                                   child: appText(
                                                     title: articleData
                                                         .shortdescription,
-                                                    fontSize: 1.5.h,
-                                                    color: AppColor.black
-                                                        .withOpacity(0.9),
+                                                    fontSize: 1.7.h,
+                                                    color: AppColor.whiteColor
+                                                        .withOpacity(0.7),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          Row(
-                                            children: [
-                                              Flexible(
-                                                child: Html(
-                                                    data: articleData.content,
-                                                    shrinkWrap: true,
-                                                    style: {
-                                                      "body": Style(
-                                                        fontSize: FontSize(2.h),
-                                                        color: AppColor.grey,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                        maxLines: 1,
-                                                      ),
-                                                    }),
-                                              ),
-                                            ],
-                                          ),
+                                          SizedBox(height: 1.5.h),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
@@ -203,7 +183,7 @@ class _HomePageTabletState extends State<HomePageTablet> {
                                                   const AssetImage(
                                                       AppImage.editicon),
                                                   size: 2.7.h,
-                                                  color: AppColor.black,
+                                                  color: AppColor.whiteColor,
                                                 ),
                                               ),
                                               SizedBox(
@@ -218,7 +198,7 @@ class _HomePageTabletState extends State<HomePageTablet> {
                                                   const AssetImage(
                                                       AppImage.deleticon),
                                                   size: 2.7.h,
-                                                  color: AppColor.black,
+                                                  color: AppColor.whiteColor,
                                                 ),
                                               ),
                                             ],

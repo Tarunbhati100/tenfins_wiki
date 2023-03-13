@@ -67,7 +67,7 @@ class Article extends GetxController {
 
   Future<void> addArticle() async {
     var description = await controller.getText();
-    if (description.contains('src=\"data:')) {
+    if (description.contains('src=\"data:') && description.contains('src=\"img:')) {
       description = '<>';
     }
     print("Update");
@@ -107,7 +107,7 @@ class Article extends GetxController {
 
   Future<void> updateArticle(index) async {
     var description = await controller.getText();
-    if (description.contains('src=\"data:')) {
+    if (description.contains('src=\"data:') && description.contains('src=\"img:')) {
       description = '<>';
     }
     print("Update");
@@ -156,7 +156,7 @@ class Article extends GetxController {
     selectedType = articleData!.type!;
     stars.text = articleData!.stars!;
     tags.text = articleData!.tags!;
-    //  controller.insertHtml('''<p style="color: blue">Google in blue</p>''');
+    // controller.insertHtml("<p>Hello</p>");
   }
 
   cleanArticleData() {

@@ -320,19 +320,24 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                                 return true;
                               },
                             ),
-                            // callbacks: Callbacks(onPaste: () {
-                            //   showMsg(context, msg: 'Paste', color: Colors.black26);
-                            //   print("");
-                            // }, onImageUploadError: (FileUpload? file,
-                            //     String? base64Str, UploadError error) {
-                            //   print(describeEnum(error));
-                            //   print(base64Str ?? '');
-                            //   if (file != null) {
-                            //     print(file.name);
-                            //     print(file.size);
-                            //     print(file.type);
-                            //   }
-                            // }),
+                           callbacks: Callbacks(onPaste: () {
+                              showMsg(context,
+                                  msg: 'Paste', color: Colors.black26);
+                              print("");
+                            }, onInit: () {
+                              print("on init");
+                              addArticleController.controller
+                                  .insertHtml(widget.articleData!.content!);
+                            }, onImageUploadError: (FileUpload? file,
+                                String? base64Str, UploadError error,) {
+                              print(describeEnum(error));
+                              print(base64Str ?? '');
+                              if (file != null) {
+                                print(file.name);
+                                print(file.size);
+                                print(file.type);
+                              }
+                            }),
                             otherOptions: const OtherOptions(
                                 decoration: BoxDecoration(
                                     borderRadius:
