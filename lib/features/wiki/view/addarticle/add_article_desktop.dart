@@ -9,7 +9,6 @@ import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
-import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
@@ -136,7 +135,7 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                           SizedBox(
                             height: 3.h,
                           ),
-
+                    
                           textField2(
                               controller: addArticleController.shortDescription,
                               hint: "Short Description",
@@ -260,7 +259,7 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
                               )
                             ],
                           ),
-
+                    
                           SizedBox(
                             height: 3.h,
                           ),

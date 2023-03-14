@@ -1,8 +1,9 @@
-// ignore_for_file: non_constant_identifier_names, unused_local_variable, unnecessary_string_escapes, avoid_print, prefer_typing_uninitialized_variables
+// ignore_for_file: non_constant_identifier_names, unused_local_variable, unnecessary_string_escapes, avoid_print, prefer_typing_uninitialized_variables, no_leading_underscores_for_local_identifiers
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:shrink_sidemenu/shrink_sidemenu.dart';
 import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/services/api.dart';
@@ -37,11 +38,34 @@ class Article extends GetxController {
   //Map selectedCategory = {"id": 0, "categoryname": "Motivation"}.obs;
   var selectedType;
 
+   bool isOpened = false;
+
+  final GlobalKey<SideMenuState> sideMenuKey = GlobalKey<SideMenuState>();
+  final GlobalKey<SideMenuState> endSideMenuKey = GlobalKey<SideMenuState>();
+
   @override
   void onInit() {
     getArticleCategoryList();
     getArticleTypeList();
     super.onInit();
+  }
+
+   toggleMenu([bool end = false]) {
+    if (end) {
+      final _state = endSideMenuKey.currentState!;
+      if (_state.isOpened) {
+        _state.closeSideMenu();
+      } else {
+        _state.openSideMenu();
+      }
+    } else {
+      final _state = sideMenuKey.currentState!;
+      if (_state.isOpened) {
+        _state.closeSideMenu();
+      } else {
+        _state.openSideMenu();
+      }
+    }
   }
 
   getArticleCategoryList() async {

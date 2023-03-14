@@ -51,6 +51,9 @@ dependencies:
   file_picker: ^5.2.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  flutter_staggered_animations: ^1.1.1
+  animated_text_kit: ^4.2.2
+  shrink_sidemenu: ^2.0.0+2-null-safety
  
 
 dev_dependencies:

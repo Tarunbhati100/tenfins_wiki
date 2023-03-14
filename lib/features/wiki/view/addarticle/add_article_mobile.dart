@@ -264,7 +264,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                             height: 3.h,
                           ),
                           HtmlEditor( 
-
+                    
                             controller: addArticleController.controller,
                             htmlEditorOptions: const HtmlEditorOptions(                             
                               
@@ -298,7 +298,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                                     redo: false,
                                     paste: true),
                               ],
-
+                    
                               customToolbarButtons: <Widget>[
                                 OutlinedButton(
                                   onPressed: showdialog,
@@ -312,7 +312,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                                   Function? updateStatus) {
                                 return true;
                               },
-
+                    
                               onDropdownChanged: (DropdownType type,
                                   dynamic changed,
                                   Function(dynamic)? updateSelectedItem) {
@@ -322,7 +322,7 @@ class _AddArticleMobileState extends State<AddArticleMobile> {
                                   (String url, InsertFileType type) {
                                 return true;
                               },
-
+                    
                               mediaUploadInterceptor: (PlatformFile file,
                                   InsertFileType type) async {
                                     
