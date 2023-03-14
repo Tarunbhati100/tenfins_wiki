@@ -54,47 +54,54 @@ class _AddArticleDesktopState extends State<AddArticleDesktop> {
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 1.w),
-              child: TextButton(
-                  onPressed: () async {
-                     
-                    if(widget.type!){
-                        setState(() {
-                      addArticleController.isLoading = true;
-                    });
-                      await addArticleController.updateArticle(widget.index);
-                         SchedulerBinding.instance.addPostFrameCallback((_) {
-                         setState(() {
-                      addArticleController.isLoading = false;
-                    });
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()));
-                    });
-                      }else{
-                        if(addArticleController.selectedCategory == null || addArticleController.selectedType == null){
-                          Fluttertoast.showToast(msg: "Please fill Category and Type",backgroundColor: AppColor.primary,textColor: AppColor.whiteColor);
-                        }else{
-                            setState(() {
-                         addArticleController.isLoading = true;
+              child: InkWell(
+                 onTap: () async {
+                       
+                      if(widget.type!){
+                          setState(() {
+                        addArticleController.isLoading = true;
                       });
-                          addArticleController.addArticle();
+                        await addArticleController.updateArticle(widget.index);
                            SchedulerBinding.instance.addPostFrameCallback((_) {
-                         setState(() {
-                       addArticleController.isLoading = false;
-                         });
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()));
-                    });
-                       }            
-                      }
-                  },
-                  child:  addArticleController.isLoading == true ? const CircularProgressIndicator(color: AppColor.whiteColor,) : appText(
-                      title: (widget.type!) ? "Update" : "Save",
-                      color: AppColor.whiteColor,
-                      fontSize: 20)),
+                           setState(() {
+                        addArticleController.isLoading = false;
+                      });
+                        Get.back();
+                      });
+                        }else{
+                          if(addArticleController.selectedCategory == null || addArticleController.selectedType == null){
+                            Fluttertoast.showToast(msg: "Please fill Category and Type",backgroundColor: AppColor.primary,textColor: AppColor.whiteColor);
+                          }else{
+                              setState(() {
+                           addArticleController.isLoading = true;
+                        });
+                            addArticleController.addArticle();
+                             SchedulerBinding.instance.addPostFrameCallback((_) {
+                           setState(() {
+                         addArticleController.isLoading = false;
+                           });
+                        Get.back();
+                      });
+                         }            
+                        }
+                    },
+                child: Container(
+                  margin: EdgeInsets.all(1.h),
+                   padding: EdgeInsets.symmetric(horizontal:2.w,vertical: 0.5.h),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColor.whiteColor),
+                    borderRadius: BorderRadius.circular(0.8.w)
+                  ),
+                  child:   
+                    Center(
+                      child: addArticleController.isLoading == true ? CircularProgressIndicator(color: AppColor.primary,) : appText(
+                            title: (widget.type!) ? "Update" : "Save",
+                            color: AppColor.whiteColor,
+                            fontSize: 1.5.h
+                            ),
+                    )
+                ),
+              ),
             )
           ],
         ),
