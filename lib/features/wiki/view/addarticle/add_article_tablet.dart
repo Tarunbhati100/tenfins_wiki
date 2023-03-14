@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -56,18 +57,43 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
             Padding(
               padding: EdgeInsets.only(right: 1.w),
               child: TextButton(
-                  onPressed: () async {
-                    (widget.type!)
-                        ? await addArticleController.updateArticle(widget.index)
-                        : await addArticleController.addArticle();
-                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                    onPressed: () async {
+                     
+                    if(widget.type!){
+                        setState(() {
+                      addArticleController.isLoading = true;
+                    });
+                      await addArticleController.updateArticle(widget.index);
+                         SchedulerBinding.instance.addPostFrameCallback((_) {
+                         setState(() {
+                      addArticleController.isLoading = false;
+                    });
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const HomePage()));
                     });
+                      }else{
+                        if(addArticleController.selectedCategory == null || addArticleController.selectedType == null){
+                          Fluttertoast.showToast(msg: "Please fill Category and Type ",backgroundColor: AppColor.primary,textColor: AppColor.whiteColor);
+                        }else{
+                            setState(() {
+                         addArticleController.isLoading = true;
+                      });
+                          addArticleController.addArticle();
+                           SchedulerBinding.instance.addPostFrameCallback((_) {
+                         setState(() {
+                       addArticleController.isLoading = false;
+                         });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()));
+                    });
+                       }            
+                      }
                   },
-                  child: appText(
+                   child:addArticleController.isLoading == true ? const CircularProgressIndicator(color: AppColor.whiteColor,) : appText(
                       title: (widget.type!) ? "Update" : "Save",
                       color: AppColor.whiteColor,
                       fontSize: 20)),
@@ -328,8 +354,10 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                               print("");
                             }, onInit: () {
                               print("on init");
-                              addArticleController.controller
-                                  .insertHtml(widget.articleData!.content!);
+                            (widget.type!)
+                                  ? addArticleController.controller
+                                      .insertHtml(widget.articleData!.content!)
+                                  : null;
                             }, onImageUploadError: (FileUpload? file,
                                 String? base64Str, UploadError error,) {
                               print(describeEnum(error));

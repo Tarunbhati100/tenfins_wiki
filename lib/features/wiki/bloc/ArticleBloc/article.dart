@@ -22,6 +22,7 @@ class Article extends GetxController {
   ValueNotifier<bool> isUpdate = ValueNotifier<bool>(false);
 
   String result = '';
+
   bool isLoading = false;
 
   List getArticleList = [].obs;
@@ -46,13 +47,14 @@ class Article extends GetxController {
   getArticleCategoryList() async {
     articleCategoryList.value = await JsonApi().getArticleCategoryList();
     print("articleCategoryList : $articleCategoryList");
-    update();
   }
 
   getArticleTypeList() async {
     articleTypeList.value = await JsonApi().getArticleTypeList();
     update();
   }
+
+  //=================================================
 
   deleteArticle(int index) {
     articledata.deleteArticle(index: index);
@@ -66,11 +68,12 @@ class Article extends GetxController {
   }
 
   Future<void> addArticle() async {
+    
     var description = await controller.getText();
     if (description.contains('src=\"data:') && description.contains('src=\"img:')) {
       description = '<>';
     }
-    print("Update");
+    print("Update");  
     print(selectedCategory);
 
     final article = Articlemodel()
@@ -104,7 +107,6 @@ class Article extends GetxController {
       update();
     });
   }
-
   Future<void> updateArticle(index) async {
     var description = await controller.getText();
     if (description.contains('src=\"data:') && description.contains('src=\"img:')) {
@@ -130,9 +132,7 @@ class Article extends GetxController {
       ..dateTime = ""
       ..content = description;
 
-    articledata
-        .updateArticle(index: index, articlemodel: article)
-        .then((value) {
+    articledata.updateArticle(index: index, articlemodel: article).then((value) {
       titleController.clear();
       shortDescription.clear();
       keywords.clear();
