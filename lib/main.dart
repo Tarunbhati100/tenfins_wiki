@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:tenfins_wiki/features/wiki/view/splashscreen.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/utils/string.dart';
+import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
+import 'package:tenfins_wiki/features/wiki/view/splashscreen.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -56,16 +57,29 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) {
-        return GetMaterialApp(
+        return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: AppSatring.appName,
           theme: ThemeData(
             canvasColor: AppColor.whiteColor,
             primaryColor: AppColor.primary,
           ),
-          home: const SplashScreen(),
+          routerConfig: _router,
         );
       },
     );
   }
 }
+
+final GoRouter _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: "/",
+      builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
+      path: "/homepage",
+      builder: (context, state) => const HomePage(),
+    ),
+  ],
+);

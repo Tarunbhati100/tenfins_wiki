@@ -1,10 +1,9 @@
 // import 'package:dna/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/SplashBloc/splash_State.dart';
-import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/utils/imageurl.dart';
 import 'package:tenfins_wiki/utils/string.dart';
@@ -22,33 +21,18 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   SplashBloc splashBloc = SplashBloc();
-  @override
-  void initState() {
-    
-    splashBloc.add(NavigateToHomeScreenEvent());
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    //...
-    super.dispose();
-    //...
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: BlocProvider(
-        create: (context) => splashBloc,
+      body: BlocProvider<SplashBloc>(
+        create: (context) => splashBloc..add(NavigateToHomeScreenEvent()),
         child: BlocConsumer<SplashBloc, SplashState>(
           listener: (context, state) {
-         if(state is LoadedState){
-        Future.delayed(const Duration(seconds: 3), () {
-         Get.off(const HomePage());
-    });
-         }
+            if (state is LoadedState) {
+              context.go('/homepage');
+            }
           },
           builder: (context, state) {
             return Container(
@@ -92,5 +76,4 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-
 }

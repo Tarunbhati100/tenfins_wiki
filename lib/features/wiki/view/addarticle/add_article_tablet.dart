@@ -2,17 +2,17 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sizer/sizer.dart';
-import 'package:tenfins_wiki/features/wiki/bloc/ArticleBloc/article.dart';
+import 'package:tenfins_wiki/features/wiki/bloc/AddArticleBloc/add_article_bloc.dart';
+import 'package:tenfins_wiki/features/wiki/bloc/AddArticleBloc/add_article_event.dart';
+import 'package:tenfins_wiki/features/wiki/bloc/AddArticleBloc/add_article_state.dart';
+import 'package:tenfins_wiki/features/wiki/view/home/homepage.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
+import 'package:tenfins_wiki/repos/article_repository.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/widgets/widget.dart';
 
@@ -27,110 +27,152 @@ class AddArticleTablet extends StatefulWidget {
 }
 
 class _AddArticleTabletState extends State<AddArticleTablet> {
-  Article addArticleController = Get.put(Article());
+  TextEditingController titleController = TextEditingController();
+  TextEditingController shortDescription = TextEditingController();
+  TextEditingController keywords = TextEditingController();
+  TextEditingController searchArticle = TextEditingController();
+  TextEditingController author = TextEditingController();
+  TextEditingController tags = TextEditingController();
+  TextEditingController mentions = TextEditingController();
+  TextEditingController stars = TextEditingController();
+  HtmlEditorController controller = HtmlEditorController();
+  ValueNotifier<bool> isUpdate = ValueNotifier<bool>(false);
+
+  bool isLoading = false;
+  // ignore: prefer_typing_uninitialized_variables
+  var selectedType;
+  // ignore: prefer_typing_uninitialized_variables
+  var selectedCategory;
+
+  AddArticleBloc addarticleBloc = AddArticleBloc(ArticleRepository());
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      (widget.type!)
-          ? addArticleController.setArticleData(widget.articleData)
-          : addArticleController.cleanArticleData();
-    });
+    if (widget.type!) {
+      titleController.text = widget.articleData!.title!;
+      shortDescription.text = widget.articleData!.shortdescription!;
+      selectedCategory = widget.articleData!.category!;
+      keywords.text = widget.articleData!.keywords!;
+      author.text = widget.articleData!.author!;
+      selectedType = widget.articleData!.type!;
+      stars.text = widget.articleData!.stars!;
+      tags.text = widget.articleData!.tags!;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (!kIsWeb) {
-          addArticleController.controller.clearFocus();
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColor.primary,
-          title: appText(
-              title: (widget.type!) ? "Update Article" : "Create New Article"),
-          elevation: 0,
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 1.w),
-               child: InkWell(
-                 onTap: () async {
-                       
-                      if(widget.type!){
-                          setState(() {
-                        addArticleController.isLoading = true;
-                      });
-                        await addArticleController.updateArticle(widget.index);
-                           SchedulerBinding.instance.addPostFrameCallback((_) {
-                           setState(() {
-                        addArticleController.isLoading = false;
-                      });
-                        Get.back();
-                      });
-                        }else{
-                          if(addArticleController.selectedCategory == null || addArticleController.selectedType == null){
-                            Fluttertoast.showToast(msg: "Please fill Category and Type",backgroundColor: AppColor.primary,textColor: AppColor.whiteColor);
-                          }else{
-                              setState(() {
-                           addArticleController.isLoading = true;
-                        });
-                            addArticleController.addArticle();
-                             SchedulerBinding.instance.addPostFrameCallback((_) {
-                           setState(() {
-                         addArticleController.isLoading = false;
-                           });
-                        Get.back();
-                      });
-                         }            
-                        }
-                    },
-                child: Container(
-                  margin: EdgeInsets.all(1.h),
-                  padding: EdgeInsets.symmetric(horizontal:3.w,vertical: 0.8.h),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.whiteColor),
-                    borderRadius: BorderRadius.circular(2.w)
-                  ),
-                  child:   
-                    Center(
-                      child: addArticleController.isLoading == true ? CircularProgressIndicator(color: AppColor.primary,) : appText(
-                            title: (widget.type!) ? "Update" : "Save",
-                            color: AppColor.whiteColor,
-                            fontSize: 2.h
-                            ),
-                    )
+    return BlocProvider<AddArticleBloc>(
+      create: (context) => addarticleBloc..add(LoadApiEvent()),
+      child: GestureDetector(
+        onTap: () {
+          if (!kIsWeb) {
+            controller.clearFocus();
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColor.primary,
+            title: appText(
+                title:
+                    (widget.type!) ? "Update Article" : "Create New Article"),
+            elevation: 0,
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 1.w),
+                child: InkWell(
+                  onTap: () async {
+                    if (selectedCategory != null && selectedType != null) {
+                      var description = await controller.getText();
+                      if (description.contains('src="data:') &&
+                          description.contains('src="img:')) {
+                        description = '<>';
+                      }
+
+                      final article = Articlemodel()
+                        ..id = 1
+                        ..title = titleController.text
+                        ..shortdescription = shortDescription.text
+                        ..category = selectedCategory.toString()
+                        ..keywords = keywords.text
+                        ..author = author.text
+                        ..views = ""
+                        ..likes = ""
+                        ..mentions = mentions.text
+                        ..stars = stars.text
+                        ..tags = tags.text
+                        ..type = selectedType.toString()
+                        ..lastUpdated = ""
+                        ..dateTime = ""
+                        ..content = description;
+
+                      if (widget.type!) {
+                        addarticleBloc
+                            .add(UpdateArticleEvent(article, widget.index!));
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()));
+                      } else {
+                        addarticleBloc.add(SaveArticleEvent(article));
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()));
+                      }
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "Please fill Category and Type",
+                          backgroundColor: AppColor.primary,
+                          textColor: AppColor.whiteColor);
+                    }
+                  },
+                  child: Container(
+                      margin: EdgeInsets.all(1.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 3.w, vertical: 0.8.h),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: AppColor.whiteColor),
+                          borderRadius: BorderRadius.circular(2.w)),
+                      child: Center(
+                        child: isLoading == true
+                            ? CircularProgressIndicator(
+                                color: AppColor.primary,
+                              )
+                            : appText(
+                                title: (widget.type!) ? "Update" : "Save",
+                                color: AppColor.whiteColor,
+                                fontSize: 2.h),
+                      )),
                 ),
-              ),
-            )
-          ],
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
-          child: Container(
-            padding: EdgeInsets.all(1.w),
-            decoration: BoxDecoration(
-                color: AppColor.whiteColor,
-                borderRadius: BorderRadius.circular(1.5.w),
-                boxShadow: [
-                  BoxShadow(
-                      color: AppColor.grey.withOpacity(0.7), blurRadius: 15)
-                ]),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 1.w),
-                child: Obx(
-                  () {
-                    return Column(
+              )
+            ],
+          ),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+            child: Container(
+              padding: EdgeInsets.all(1.w),
+              decoration: BoxDecoration(
+                  color: AppColor.whiteColor,
+                  borderRadius: BorderRadius.circular(1.5.w),
+                  boxShadow: [
+                    BoxShadow(
+                        color: AppColor.grey.withOpacity(0.7), blurRadius: 15)
+                  ]),
+              child: SingleChildScrollView(
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 1.w),
+                    child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           SizedBox(
                             height: 1.h,
                           ),
                           textField2(
-                              controller: addArticleController.titleController,
+                              controller: titleController,
                               hint: "Enter Title",
                               hight: 8.h,
                               readOnly: false,
@@ -138,9 +180,9 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                           SizedBox(
                             height: 3.h,
                           ),
-                    
+
                           textField2(
-                              controller: addArticleController.shortDescription,
+                              controller: shortDescription,
                               hint: "Short Description",
                               hight: 8.h,
                               readOnly: false,
@@ -151,88 +193,125 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                           Row(
                             children: [
                               Expanded(
-                                child: Container(
-                                  // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: const Color(0xFFACAAA0)),
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(7),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.blueGrey[50]!,
-                                          blurRadius: 1)
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: DropdownButton(
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      hint: const Text('Select Category'),
-                                      value:
-                                          addArticleController.selectedCategory,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          addArticleController
-                                              .selectedCategory = newValue;
-                                        });
-                                      },
-                                      items: addArticleController
-                                          .articleCategoryList.value
-                                          .map((category) {
-                                        return DropdownMenuItem(
-                                          value: category['categoryname'],
-                                          child: Text(
-                                              "${category['categoryname']}"),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
+                                child: BlocConsumer<AddArticleBloc,
+                                    AddArticleState>(
+                                  listener: (context, state) {},
+                                  builder: (context, state) {
+                                    if (state is AddArticleLoadedState) {
+                                      return Container(
+                                        // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: const Color(0xFFACAAA0)),
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(7),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.blueGrey[50]!,
+                                                blurRadius: 1)
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: DropdownButton(
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            hint: const Text('Select Category'),
+                                            value: selectedCategory,
+                                            onChanged: (newValue) {
+                                              if (mounted) {
+                                                setState(() {
+                                                  selectedCategory = newValue;
+                                                });
+                                              }
+                                            },
+                                            items: state.categorylist
+                                                .map((category) {
+                                              return DropdownMenuItem(
+                                                value: category['categoryname'],
+                                                child: Text(
+                                                    "${category['categoryname']}"),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    if (state is AddArticleLoadingState) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                    return Center(
+                                      child: appText(
+                                          title: "No Category",
+                                          color: AppColor.grey),
+                                    );
+                                  },
                                 ),
                               ),
                               SizedBox(
                                 width: 2.w,
                               ),
                               Expanded(
-                                child: Container(
-                                  // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: const Color(0xFFACAAA0)),
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(7),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.blueGrey[50]!,
-                                          blurRadius: 1)
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: DropdownButton(
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      hint: const Text('Select Type'),
-                                      value: addArticleController.selectedType,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          addArticleController.selectedType =
-                                              newValue;
-                                        });
-                                      },
-                                      items: addArticleController
-                                          .articleTypeList.value
-                                          .map((value) {
-                                        return DropdownMenuItem(
-                                          value: value['title'],
-                                          child: Text("${value['title']}"),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
+                                child: BlocConsumer<AddArticleBloc,
+                                    AddArticleState>(
+                                  listener: (context, state) {},
+                                  builder: (context, state) {
+                                    if (state is AddArticleLoadedState) {
+                                      return Container(
+                                        // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: const Color(0xFFACAAA0)),
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(7),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.blueGrey[50]!,
+                                                blurRadius: 1)
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: DropdownButton(
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            hint: const Text('Select Type'),
+                                            value: selectedType,
+                                            onChanged: (newValue) {
+                                              if (mounted) {
+                                                setState(() {
+                                                  selectedType = newValue;
+                                                });
+                                              }
+                                            },
+                                            items: state.typelist.map((value) {
+                                              return DropdownMenuItem(
+                                                value: value['title'],
+                                                child:
+                                                    Text("${value['title']}"),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    if (state is AddArticleLoadingState) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                    return Center(
+                                      child: appText(
+                                          title: "No Category",
+                                          color: AppColor.grey),
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -244,7 +323,7 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                             children: [
                               Expanded(
                                 child: textField2(
-                                    controller: addArticleController.keywords,
+                                    controller: keywords,
                                     hint: "Keywords",
                                     hight: 8.h,
                                     readOnly: false,
@@ -255,7 +334,7 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                               ),
                               Expanded(
                                 child: textField2(
-                                    controller: addArticleController.author,
+                                    controller: author,
                                     hint: "Author",
                                     hight: 8.h,
                                     readOnly: false,
@@ -263,7 +342,7 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                               )
                             ],
                           ),
-                    
+
                           SizedBox(
                             height: 3.h,
                           ),
@@ -271,7 +350,7 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                             children: [
                               Expanded(
                                 child: textField2(
-                                    controller: addArticleController.stars,
+                                    controller: stars,
                                     hint: "Stars",
                                     hight: 8.h,
                                     readOnly: false,
@@ -282,7 +361,7 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                               ),
                               Expanded(
                                 child: textField2(
-                                    controller: addArticleController.tags,
+                                    controller: tags,
                                     hint: "Tags",
                                     hight: 8.h,
                                     readOnly: false,
@@ -294,7 +373,7 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                             height: 3.h,
                           ),
                           HtmlEditor(
-                            controller: addArticleController.controller,
+                            controller: controller,
                             htmlEditorOptions: const HtmlEditorOptions(
                               hint: "Write Your Article..",
                               shouldEnsureVisible: true,
@@ -361,12 +440,15 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                               print("");
                             }, onInit: () {
                               print("on init");
-                            (widget.type!)
-                                  ? addArticleController.controller
+                              (widget.type!)
+                                  ? controller
                                       .insertHtml(widget.articleData!.content!)
                                   : null;
-                            }, onImageUploadError: (FileUpload? file,
-                                String? base64Str, UploadError error,) {
+                            }, onImageUploadError: (
+                              FileUpload? file,
+                              String? base64Str,
+                              UploadError error,
+                            ) {
                               print(describeEnum(error));
                               print(base64Str ?? '');
                               if (file != null) {
@@ -408,14 +490,12 @@ class _AddArticleTabletState extends State<AddArticleTablet> {
                           //   height: 6.h,
                           //   title: "Create Article",
                           //   textColor: AppColor.whiteColor,
-                          //   onTap: addArticleController.addArticle,
+                          //   onTap: addArticle,
                           // ),
                           // SizedBox(
                           //   height: 3.h,
                           // ),
-                        ]);
-                  },
-                ),
+                        ])),
               ),
             ),
           ),

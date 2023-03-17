@@ -5,10 +5,12 @@ import 'package:tenfins_wiki/features/wiki/bloc/SplashBloc/splash_Event.dart';
 import 'package:tenfins_wiki/features/wiki/bloc/SplashBloc/splash_State.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  SplashBloc():super(LoadingState()){
-    on<NavigateToHomeScreenEvent>((event, emit) {
-      emit(LoadingState());
-      emit(LoadedState());
-    },);
+  SplashBloc() : super(LoadingState()) {
+    on<NavigateToHomeScreenEvent>(
+      (event, emit) {
+        emit(LoadingState());
+        emit(LoadedState());
+      },
+    );
   }
 }
