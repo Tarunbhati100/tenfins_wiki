@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:tenfins_wiki/features/wiki/bloc/MainBloc/main_bloc.dart';
+import 'package:tenfins_wiki/features/wiki/view/addarticle/add_article.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 import 'package:tenfins_wiki/utils/color.dart';
 import 'package:tenfins_wiki/utils/string.dart';
@@ -55,18 +58,21 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Sizer(
-      builder: (context, orientation, deviceType) {
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          title: AppSatring.appName,
-          theme: ThemeData(
-            canvasColor: AppColor.whiteColor,
-            primaryColor: AppColor.primary,
-          ),
-          routerConfig: _router,
-        );
-      },
+    return BlocProvider(
+      create: (context) => InternetBloc(),
+      child: Sizer(
+        builder: (context, orientation, deviceType) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            title: AppSatring.appName,
+            theme: ThemeData(
+              canvasColor: AppColor.whiteColor,
+              primaryColor: AppColor.primary,
+            ),
+            routerConfig: _router,
+          );
+        },
+      ),
     );
   }
 }
@@ -80,6 +86,10 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: "/homepage",
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: "/addarticlepage",
+      builder: (context, state) => AddArticlePage(),
     ),
   ],
 );

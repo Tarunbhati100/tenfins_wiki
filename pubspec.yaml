@@ -55,6 +55,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   shrink_sidemenu: ^2.0.0+2-null-safety
   go_router: ^6.2.0
+  connectivity_plus:
  
 
 dev_dependencies:
