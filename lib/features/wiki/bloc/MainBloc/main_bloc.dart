@@ -12,6 +12,7 @@ class InternetBloc extends Bloc<InternetEvent, InternetState> {
 
   InternetBloc() : super(InternetInitialState()) {
     on<InternetLostEvent>((event, emit) => emit(InternetLostState()));
+
     on<InternetGainedEvent>((event, emit) => emit(InternetGainedState()));
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((result) {
@@ -19,7 +20,7 @@ class InternetBloc extends Bloc<InternetEvent, InternetState> {
           result == ConnectivityResult.wifi) {
         add(InternetGainedEvent());
       } else {
-        add(InternetLostEvent());
+        add(InternetGainedEvent());
       }
     });
   }

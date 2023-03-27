@@ -1,3 +1,8 @@
+// ignore_for_file: unused_field, avoid_print
+
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive/hive.dart';
 import 'package:tenfins_wiki/models/databaseModel.dart';
 
@@ -6,13 +11,29 @@ abstract class ApiBase {
 }
 
 class JsonApi extends ApiBase {
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription? _connectivitySubscription;
+
   Future getArticleList() async {
-    Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
-    List articleList = box.values.toList();
-    if (articleList.isEmpty) {
-      return [];
+    var result = await _connectivity.checkConnectivity();
+    print("resultresult : $result");
+    if (result == ConnectivityResult.none) {
+      print("ConnectivityResult : No Internet");
+      Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
+      List articleList = box.values.toList();
+      if (articleList.isEmpty) {
+        return [];
+      }
+      return articleList;
+    } else {
+      print("ConnectivityResult : Yes Internet");
+      Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
+      List articleList = box.values.toList();
+      if (articleList.isEmpty) {
+        return [];
+      }
+      return articleList;
     }
-    return articleList;
   }
 
   Future searchArticleList(value) async {

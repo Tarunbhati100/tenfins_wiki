@@ -6,6 +6,7 @@ import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ArticleRepository _repo;
+
   HomeBloc(this._repo) : super(HomeLoadingState()) {
     on<LoadApiEvent>((event, emit) async {
       emit(HomeLoadingState());
