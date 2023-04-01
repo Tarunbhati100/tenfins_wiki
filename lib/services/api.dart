@@ -29,6 +29,8 @@ class JsonApi extends ApiBase {
       print("ConnectivityResult : Yes Internet");
       Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
       List articleList = box.values.toList();
+      //------------- Sync Remote To Local Data --------------------------//
+      //  syncRemoteToLocalData(articleList);
       if (articleList.isEmpty) {
         return [];
       }
@@ -37,14 +39,27 @@ class JsonApi extends ApiBase {
   }
 
   Future searchArticleList(value) async {
-    Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
-    List articleList = box.values
-        .where((c) => c.title!.toLowerCase().contains(value))
-        .toList();
-    if (articleList.isEmpty) {
-      return [];
+    var result = await _connectivity.checkConnectivity();
+    print("resultresult : $result");
+    if (result == ConnectivityResult.none) {
+      Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
+      List articleList = box.values
+          .where((c) => c.title!.toLowerCase().contains(value))
+          .toList();
+      if (articleList.isEmpty) {
+        return [];
+      }
+      return articleList;
+    } else {
+      Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
+      List articleList = box.values
+          .where((c) => c.title!.toLowerCase().contains(value))
+          .toList();
+      if (articleList.isEmpty) {
+        return [];
+      }
+      return articleList;
     }
-    return articleList;
   }
 
   @override
@@ -83,4 +98,31 @@ class JsonApi extends ApiBase {
     Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
     await box.deleteAt(index);
   }
+
+  //------------- Sync Remote To Local Data --------------------------//
+  Future<void> syncRemoteToLocalData(articlelist) async {
+    print("Sync Remote To Local Data");
+    Box<Articlemodel> box = Hive.box<Articlemodel>("WikiBox");
+    for (Articlemodel value in articlelist) {
+      final article = Articlemodel()
+        ..id = 1
+        ..title = value.title
+        ..shortdescription = value.shortdescription
+        ..category = value.category
+        ..keywords = value.keywords
+        ..author = value.author
+        ..views = value.views
+        ..likes = value.likes
+        ..mentions = value.mentions
+        ..stars = value.stars
+        ..tags = value.tags
+        ..type = value.type
+        ..lastUpdated = value.lastUpdated
+        ..dateTime = value.dateTime
+        ..content = value.content;
+      await box.add(article);
+      article.save();
+    }
+  }
+  //----------------------- End --------------------------//
 }
