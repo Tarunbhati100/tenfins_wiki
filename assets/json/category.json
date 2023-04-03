@@ -1,0 +1,26 @@
+[
+    {
+        "id": 0,
+        "categoryname": "Motivation"
+    },
+    {
+        "id": 1,
+        "categoryname": "Life Lessons"
+    },
+    {
+        "id": 3,
+        "categoryname": "Creativity"
+    },
+    {
+        "id": 4,
+        "categoryname": "Habits"
+    },
+    {
+        "id": 5,
+        "categoryname": "Focus"
+    },
+    {
+        "id": 6,
+        "categoryname": "Productivity"
+    },
+]

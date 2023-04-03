@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "fullname": "Bert",
+        "phone": "979454545",
+        "address": "USA",
+        "email": "test@gmail.com",
+        "password": "123"
+    },
+    {
+        "id": 2,
+        "fullname": "Bert 1",
+        "phone": "979454545",
+        "address": "USA",
+        "email": "test1@gmail.com",
+        "password": "123"
+    }
+]
