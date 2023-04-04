@@ -3,14 +3,14 @@ import 'package:test/test.dart';
 
 void main() {
   group('A group of tests', () {
-    final awesome = Awesome();
+    Future getCategoryList() async {
+      final category = await ApiLocal().getCategoryList();
+      return category;
+    }
 
-    setUp(() {
-      // Additional setup goes here.
-    });
-
-    test('First Test', () {
-      expect(awesome.isAwesome, isTrue);
-    });
+    Future getTypeList() async {
+      final category = await ApiLocal().getCategoryList();
+      return category;
+    }
   });
 }
