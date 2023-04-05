@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:sync_program/sync_program.dart';
 import 'package:test/test.dart';
 
