@@ -1,24 +1,35 @@
+import 'dart:io';
+
 import 'package:sync_program/common/component.dart';
 import 'package:sync_program/models/databaseModel.dart';
 import 'package:sync_program/sync_program.dart';
+import 'package:hive/hive.dart';
 
 void main() async {
-  hiveInit();
+  var path = Directory.current.path;
+  Hive.init(path);
+  Hive.registerAdapter<Articlemodel>(ArticlemodelAdapter());
+  await Hive.openBox<Articlemodel>("WikiBox");
+
   bool connectivityStatus = false;
   saveArticle(article);
-  // getArticleList(connectivityStatus);
-//  searchArticleList(connectivityStatus);
-  // getCategoryList(connectivityStatus);
-//  getTypeList(connectivityStatus);
+  getArticleList(connectivityStatus);
+  searchArticleList(connectivityStatus);
+  getCategoryList(connectivityStatus);
+  getTypeList(connectivityStatus);
 }
 
 Future getArticleList(connectivityStatus) async {
   if (connectivityStatus) {
     final articleList = await ApiRemote().getArticleList();
-    print("Availabe internet ArticleList : $articleList");
+    for (var element in articleList) {
+      print("title : ${element.title}");
+    }
   } else {
     final articleList = await ApiLocal().getArticleList();
-    print("No internet ArticleList : $articleList");
+    for (var element in articleList) {
+      print("title : ${element.title}");
+    }
   }
 }
 

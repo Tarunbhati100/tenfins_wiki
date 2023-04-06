@@ -1,18 +1,8 @@
 // ignore_for_file: unused_field, avoid_print, file_names
 import 'dart:async';
-import 'dart:io';
 import 'package:hive/hive.dart';
 import 'package:sync_program/common/component.dart';
 import 'package:sync_program/models/databaseModel.dart';
-
-hiveInit() async {
-  var path = Directory.current.path;
-  Hive
-    ..init(path)
-    ..registerAdapter<Articlemodel>(ArticlemodelAdapter());
-  // await Hive.openBox<Articlemodel>("WikiBox");
-  print("done");
-}
 
 abstract class ApiBase {}
 
