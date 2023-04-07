@@ -9,6 +9,8 @@ environment:
 dependencies:
   # path: ^1.8.0s
   hive: ^2.2.3
+  uuid: ^3.0.7
+  intl: ^0.17.0
 
 dev_dependencies:
   lints: ^2.0.0

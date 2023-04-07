@@ -1,34 +1,39 @@
 import 'dart:io';
-
-import 'package:sync_program/common/component.dart';
-import 'package:sync_program/models/databaseModel.dart';
 import 'package:sync_program/sync_program.dart';
 import 'package:hive/hive.dart';
 
 void main() async {
   var path = Directory.current.path;
   Hive.init(path);
-  Hive.registerAdapter<Articlemodel>(ArticlemodelAdapter());
-  await Hive.openBox<Articlemodel>("WikiBox");
 
+  // Hive.registerAdapter<Articlemodel>(ArticlemodelAdapter());
+  await Hive.openBox("tbl_article_local_box");
+  await Hive.openBox("tbl_article_changelog_box");
+  await Hive.openBox("tbl_article_remote");
   bool connectivityStatus = false;
-  saveArticle(article);
+
+  // saveArticle(connectivityStatus);
+  updateArticle(connectivityStatus);
   getArticleList(connectivityStatus);
-  searchArticleList(connectivityStatus);
-  getCategoryList(connectivityStatus);
-  getTypeList(connectivityStatus);
+
+  syncData();
+  // deleteArticle(connectivityStatus);
+  // searchArticleList(connectivityStatus);
+  // getCategoryList(connectivityStatus);
+  // getTypeList(connectivityStatus);
 }
 
 Future getArticleList(connectivityStatus) async {
   if (connectivityStatus) {
     final articleList = await ApiRemote().getArticleList();
     for (var element in articleList) {
-      print("title : ${element.title}");
+      print("article list with internet : ${element}");
+      await SyncData().syncRemoteToLocal(element);
     }
   } else {
     final articleList = await ApiLocal().getArticleList();
     for (var element in articleList) {
-      print("title : ${element.title}");
+      print("article list with internet : ${element}");
     }
   }
 }
@@ -63,15 +68,34 @@ Future getTypeList(connectivityStatus) async {
   }
 }
 
-Future<void> updateArticle(Articlemodel article, index) async {
-  await ApiLocal().updateArticle(article, index);
+Future<void> updateArticle(connectivityStatus) async {
+  if (connectivityStatus) {
+    String uuid = "0ea10fa0-d536-11ed-a28e-49dabf5c511f";
+    await ApiRemote().updateArticle(uuid);
+  } else {
+    String uuid = "0ea10fa0-d536-11ed-a28e-49dabf5c511f";
+    await ApiLocal().updateArticle(uuid);
+  }
 }
 
-Future<void> saveArticle(Articlemodel article) async {
-  await ApiLocal().saveArticle(article);
+Future<void> saveArticle(connectivityStatus) async {
+  if (connectivityStatus) {
+    await ApiRemote().saveArticle();
+  } else {
+    await ApiLocal().saveArticle();
+  }
 }
 
-Future deleteArticle(index) async {
-  final article = await ApiLocal().deleteArticle(index);
-  return article;
+Future deleteArticle(connectivityStatus) async {
+  if (connectivityStatus) {
+    final article = await ApiRemote().deleteArticle();
+    return article;
+  } else {
+    final article = await ApiLocal().deleteArticle();
+    return article;
+  }
+}
+
+Future syncData() async {
+  await SyncData().syncData();
 }

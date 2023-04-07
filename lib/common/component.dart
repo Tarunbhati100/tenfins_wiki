@@ -1,21 +1,19 @@
-import 'package:sync_program/models/databaseModel.dart';
-
-final article = Articlemodel()
-  ..id = 1
-  ..title = "Demo Article"
-  ..shortdescription = "This is a motivation article"
-  ..category = "Motivation"
-  ..keywords = "new"
-  ..author = "Bert"
-  ..views = ""
-  ..likes = ""
-  ..mentions = "nit"
-  ..stars = "3"
-  ..tags = "4"
-  ..type = "Active"
-  ..lastUpdated = ""
-  ..dateTime = ""
-  ..content = "<p>This is a motivation article</p>";
+// final article = Articlemodel()
+//   ..id = 1
+//   ..title = "Demo Article"
+//   ..shortdescription = "This is a motivation article"
+//   ..category = "Motivation"
+//   ..keywords = "new"
+//   ..author = "Bert"
+//   ..views = ""
+//   ..likes = ""
+//   ..mentions = "nit"
+//   ..stars = "3"
+//   ..tags = "4"
+//   ..type = "Active"
+//   ..lastUpdated = ""
+//   ..dateTime = ""
+//   ..content = "<p>This is a motivation article</p>";
 
 List articleCategory = [
   {"id": 0, "categoryname": "Motivation"},
@@ -33,7 +31,7 @@ List typeCategory = [
 
 List articleList = [
   {
-    "id": 1,
+    "uuid": 1,
     "title": "Motivation Article",
     "shortdescription": "This is a Motivation Content",
     "category": "Motivation",
@@ -50,7 +48,7 @@ List articleList = [
     "content": "<p>This is a Motivation Content</p>"
   },
   {
-    "id": 2,
+    "uuid": 2,
     "title": "Focus Article",
     "shortdescription": "This is a Focus Content",
     "category": "Focus",
@@ -67,7 +65,7 @@ List articleList = [
     "content": "<p>This is a Focus Content</p>"
   },
   {
-    "id": 3,
+    "uuid": 3,
     "title": "Productivity Article",
     "shortdescription": "This is a Productivity Content",
     "category": "Productivity",
@@ -84,7 +82,7 @@ List articleList = [
     "content": "<p>This is a Productivity Content</p>"
   },
   {
-    "id": 4,
+    "uuid": 4,
     "title": "Creativity Article",
     "shortdescription": "This is a Creativity Content",
     "category": "Creativity",
@@ -101,7 +99,7 @@ List articleList = [
     "content": "<p>This is a Creativity Content</p>"
   },
   {
-    "id": 4,
+    "uuid": 4,
     "title": "Focus Article",
     "shortdescription": "This is a Focus Content",
     "category": "Focus",
